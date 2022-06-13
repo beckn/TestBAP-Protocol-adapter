@@ -1,0 +1,9 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/beckn/ondc-test-bap-fe.git
+[submodule "backend"]
+	path = backend
+	url = https://github.com/beckn/ondc-test-bap-be.git
+[submodule "protocol-server"]
+	path = protocol-server
+	url = https://github.com/beckn/protocol-server.git
