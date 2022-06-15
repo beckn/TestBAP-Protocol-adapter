@@ -29,15 +29,15 @@ class OnSearchPollController @Autowired constructor(
 ) : AbstractOnPollController<ProtocolOnSearch, ClientSearchResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
   private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-  @RequestMapping("/client/v1/on_search")
-  @ResponseBody
-  fun onSearchV1(@RequestParam messageId: String,
-                 @RequestParam providerName : String?,
-                 @RequestParam categoryName: String?): ResponseEntity<out ClientResponse> {
-    log.info("on Search for client layer : $messageId, $providerName, $categoryName")
-   return onPoll(
-      messageId,
-      protocolClient.getSearchResponsesCall(messageId, providerName, categoryName), ProtocolContext.Action.ON_SEARCH
-    )
-  }
+//  @RequestMapping("/client/v1/on_search")
+//  @ResponseBody
+//  fun onSearchV1(@RequestParam messageId: String,
+//                 @RequestParam providerName : String?,
+//                 @RequestParam categoryName: String?): ResponseEntity<out ClientResponse> {
+//    log.info("on Search for client layer : $messageId, $providerName, $categoryName")
+//   return onPoll(
+//      messageId,
+//      protocolClient.getSearchResponsesCall(messageId, providerName, categoryName), ProtocolContext.Action.ON_SEARCH
+//    )
+//  }
 }

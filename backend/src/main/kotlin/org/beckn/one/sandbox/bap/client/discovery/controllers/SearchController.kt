@@ -1,7 +1,6 @@
 package org.beckn.one.sandbox.bap.client.discovery.controllers
 
-import arrow.core.flatMap
-import org.beckn.one.sandbox.bap.client.discovery.services.SearchService
+import org.beckn.one.sandbox.bap.client.discovery.services.ProtocolSearchService
 import org.beckn.one.sandbox.bap.client.shared.dtos.SearchRequestDto
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.factories.ContextFactory
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class SearchController @Autowired constructor(
-  val searchService: SearchService,
+  val searchService: ProtocolSearchService,
   val contextFactory: ContextFactory,
   val loggingService: LoggingService,
   val loggingFactory: LoggingFactory

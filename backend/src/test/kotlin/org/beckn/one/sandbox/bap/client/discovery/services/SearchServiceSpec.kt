@@ -17,7 +17,7 @@ import org.mockito.Mockito.*
 internal class SearchServiceSpec : DescribeSpec() {
   private val registryService = mock(RegistryService::class.java)
   private val gatewayService = mock(GatewayService::class.java)
-  private val bppSearchService = mock(BppSearchService::class.java)
+  private val bppSearchService = mock(ProtocolSearchService::class.java)
   private val searchService = SearchService(
     registryService = registryService,
     gatewayService = gatewayService,

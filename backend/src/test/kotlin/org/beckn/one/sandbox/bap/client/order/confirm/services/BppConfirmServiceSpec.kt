@@ -4,7 +4,7 @@ import arrow.core.Either
 import io.kotest.assertions.arrow.either.shouldBeLeft
 import io.kotest.core.spec.style.DescribeSpec
 import org.beckn.one.sandbox.bap.client.external.provider.BppClient
-import org.beckn.one.sandbox.bap.client.external.provider.BppClientFactory
+import org.beckn.one.sandbox.bap.client.external.provider.ProtocolClientFactory
 import org.beckn.one.sandbox.bap.client.factories.DeliveryDtoFactory
 import org.beckn.one.sandbox.bap.client.factories.OrderItemDtoFactory
 import org.beckn.one.sandbox.bap.client.factories.OrderPaymentFactory
@@ -22,7 +22,7 @@ import java.time.Instant
 import java.time.ZoneId
 
 internal class BppConfirmServiceSpec : DescribeSpec() {
-  private val bppServiceClientFactory = mock(BppClientFactory::class.java)
+  private val bppServiceClientFactory = mock(ProtocolClientFactory::class.java)
   private val clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
   private val uuidFactory = mock(UuidFactory::class.java)
   private val contextFactory = ContextFactoryInstance.create(uuidFactory, clock)

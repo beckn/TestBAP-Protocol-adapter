@@ -3,7 +3,7 @@ package org.beckn.one.sandbox.bap.client.discovery.services
 import io.kotest.assertions.arrow.either.shouldBeLeft
 import io.kotest.core.spec.style.DescribeSpec
 import org.beckn.one.sandbox.bap.client.external.provider.BppClient
-import org.beckn.one.sandbox.bap.client.external.provider.BppClientFactory
+import org.beckn.one.sandbox.bap.client.external.provider.ProtocolClientFactory
 import org.beckn.one.sandbox.bap.client.factories.SearchRequestFactory
 import org.beckn.one.sandbox.bap.client.shared.dtos.SearchCriteria
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
@@ -20,11 +20,11 @@ import java.time.Instant
 import java.time.ZoneId
 
 internal class BppSearchServiceSpec : DescribeSpec() {
-  private val bppServiceClientFactory = mock(BppClientFactory::class.java)
+  private val bppServiceClientFactory = mock(ProtocolClientFactory::class.java)
   private val clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
   private val uuidFactory = mock(UuidFactory::class.java)
   private val contextFactory = ContextFactoryInstance.create(uuidFactory, clock)
-  private val bppSearchService = BppSearchService(bppServiceClientFactory)
+  private val bppSearchService = ProtocolSearchService(bppServiceClientFactory)
   private val bppServiceClient: BppClient = mock(BppClient::class.java)
   private val bppUri = "https://bpp1.com"
 

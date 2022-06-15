@@ -6,7 +6,7 @@ import arrow.core.Either.Right
 import org.beckn.one.sandbox.bap.client.external.hasBody
 import org.beckn.one.sandbox.bap.client.external.isAckNegative
 import org.beckn.one.sandbox.bap.client.external.isInternalServerError
-import org.beckn.one.sandbox.bap.client.external.provider.BppClientFactory
+import org.beckn.one.sandbox.bap.client.external.provider.ProtocolClientFactory
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
 import org.beckn.protocol.schemas.ProtocolAckResponse
 import org.beckn.protocol.schemas.ProtocolContext
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class BppOrderStatusService @Autowired constructor(
-  private val bppServiceClientFactory: BppClientFactory
+  private val bppServiceClientFactory: ProtocolClientFactory
 ) {
   private val log: Logger = LoggerFactory.getLogger(BppOrderStatusService::class.java)
 

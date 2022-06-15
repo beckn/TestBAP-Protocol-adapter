@@ -7,7 +7,7 @@ import org.beckn.one.sandbox.bap.client.external.hasBody
 import org.beckn.one.sandbox.bap.client.external.isAckNegative
 import org.beckn.one.sandbox.bap.client.external.isInternalServerError
 import org.beckn.one.sandbox.bap.client.external.provider.BppClient
-import org.beckn.one.sandbox.bap.client.external.provider.BppClientFactory
+import org.beckn.one.sandbox.bap.client.external.provider.ProtocolClientFactory
 import org.beckn.one.sandbox.bap.client.shared.dtos.OrderDto
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
 import org.beckn.protocol.schemas.*
@@ -19,7 +19,7 @@ import retrofit2.Response
 
 @Service
 class BppConfirmService @Autowired constructor(
-  private val bppServiceClientFactory: BppClientFactory
+  private val bppServiceClientFactory: ProtocolClientFactory
 ) {
   private val log: Logger = LoggerFactory.getLogger(BppConfirmService::class.java)
 

@@ -13,7 +13,7 @@ import org.springframework.test.context.TestPropertySource
 @ActiveProfiles(value = ["cached-enabled"])
 @TestPropertySource(locations = ["/application-test.yml"])
 class BppClientFactorySpec @Autowired constructor(
-  private val bppClientFactory: BppClientFactory
+  private val bppClientFactory: ProtocolClientFactory
 ) : DescribeSpec() {
   init {
     describe("Get Client Caching") {

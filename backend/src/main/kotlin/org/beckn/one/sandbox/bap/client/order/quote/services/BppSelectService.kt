@@ -7,7 +7,7 @@ import org.beckn.one.sandbox.bap.client.external.hasBody
 import org.beckn.one.sandbox.bap.client.external.isAckNegative
 import org.beckn.one.sandbox.bap.client.external.isInternalServerError
 import org.beckn.one.sandbox.bap.client.external.provider.BppClient
-import org.beckn.one.sandbox.bap.client.external.provider.BppClientFactory
+import org.beckn.one.sandbox.bap.client.external.provider.ProtocolClientFactory
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
 import org.beckn.protocol.schemas.*
 import org.slf4j.Logger
@@ -18,7 +18,7 @@ import retrofit2.Response
 
 @Service
 class BppSelectService @Autowired constructor(
-  private val bppServiceClientFactory: BppClientFactory
+  private val bppServiceClientFactory: ProtocolClientFactory
 ) {
   private val log: Logger = LoggerFactory.getLogger(BppSelectService::class.java)
 
