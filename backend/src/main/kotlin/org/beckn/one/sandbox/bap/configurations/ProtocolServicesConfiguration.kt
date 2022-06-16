@@ -2,13 +2,10 @@ package org.beckn.one.sandbox.bap.configurations
 
 import org.beckn.one.sandbox.bap.client.shared.services.PollForResponseService
 import org.beckn.one.sandbox.bap.message.entities.*
-import org.beckn.one.sandbox.bap.message.mappers.GenericResponseMapper
 import org.beckn.one.sandbox.bap.message.mappers.ProtocolGenericResponseMapper
 import org.beckn.one.sandbox.bap.message.repositories.BecknProtocolResponseRepository
-import org.beckn.one.sandbox.bap.message.repositories.BecknResponseRepository
 import org.beckn.one.sandbox.bap.message.services.MessageService
 import org.beckn.one.sandbox.bap.message.services.ProtocolResponseStorageService
-import org.beckn.one.sandbox.bap.message.services.ResponseStorageService
 import org.beckn.one.sandbox.bap.message.services.ProtocolResponseStorageServiceImpl
 import org.beckn.protocol.schemas.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +14,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class ProtocolServicesConfiguration {
-
   @Bean
   fun onSearchStorageService(
     @Autowired responseRepo: BecknProtocolResponseRepository<OnSearchDao>,

@@ -34,10 +34,9 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
     @Autowired
     var restSecProps: SecurityProperties? = null
 
-
-
     @Autowired
     var tokenAuthenticationFilter: JwtRequestFilter? = null
+
     @Bean
     fun restAuthenticationEntryPoint(): AuthenticationEntryPoint {
         return AuthenticationEntryPoint {

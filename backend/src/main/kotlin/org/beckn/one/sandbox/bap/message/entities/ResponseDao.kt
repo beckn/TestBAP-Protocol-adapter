@@ -3,6 +3,9 @@ package org.beckn.one.sandbox.bap.message.entities
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.beckn.protocol.schemas.Default
+import org.beckn.protocol.schemas.ProtocolContext
+import org.beckn.protocol.schemas.ProtocolError
+import org.beckn.protocol.schemas.ProtocolResponse
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -73,7 +76,6 @@ data class AccountDetailsDao @Default constructor(
   @JsonIgnore val clock: Clock = Clock.systemUTC(),
   val createdAt: OffsetDateTime = OffsetDateTime.now(clock),
 ) : BecknResponseDao
-
 
 data class OnSearchDao @Default constructor(
   override val context: ContextDao,

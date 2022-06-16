@@ -31,11 +31,11 @@ open class AbstractCallbackController<Protocol: ProtocolResponse> @Autowired con
           .body(ProtocolAckResponse(null, it.message(), it.error()))
       },
       ifRight = {
-//        val loggerRequest = loggingFactory.create(messageId = callBackActionResponse.context?.messageId, transactionId = callBackActionResponse.context?.transactionId,
-//          contextTimestamp = callBackActionResponse.context?.timestamp.toString(),
-//          action = action, bppId = callBackActionResponse.context?.bppId
-//        )
-//        loggingService.postLog(loggerRequest)
+        val loggerRequest = loggingFactory.create(messageId = callBackActionResponse.context?.messageId?:"", transactionId = callBackActionResponse.context?.transactionId?:"",
+          contextTimestamp = callBackActionResponse.context?.timestamp.toString(),
+          action = action, bppId = callBackActionResponse.context?.bppId
+        )
+        loggingService.postLog(loggerRequest)
         log.info("Successfully persisted response with message id: ${callBackActionResponse.context?.messageId}")
         ResponseEntity.ok(ProtocolAckResponse(null, ResponseMessage.ack()))
       }

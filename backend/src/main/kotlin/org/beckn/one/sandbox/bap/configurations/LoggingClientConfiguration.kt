@@ -1,14 +1,12 @@
 package org.beckn.one.sandbox.bap.configurations
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.github.resilience4j.retrofit.CircuitBreakerCallAdapter
 import io.github.resilience4j.retrofit.RetryCallAdapter
 import io.github.resilience4j.retry.Retry
 import okhttp3.OkHttpClient
 import org.beckn.one.sandbox.bap.client.external.logging.LoggingServiceClient
 import org.beckn.one.sandbox.bap.client.shared.Util
 import org.beckn.one.sandbox.bap.client.shared.security.SignRequestInterceptor
-import org.beckn.one.sandbox.bap.factories.CircuitBreakerFactory
 import org.beckn.one.sandbox.bap.factories.RetryFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value

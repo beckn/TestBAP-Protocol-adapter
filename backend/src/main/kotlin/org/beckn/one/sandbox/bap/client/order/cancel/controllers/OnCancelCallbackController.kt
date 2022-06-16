@@ -1,25 +1,25 @@
-package org.beckn.one.sandbox.bap.client.discovery.controllers
+package org.beckn.one.sandbox.bap.client.order.cancel.controllers
 
 import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractCallbackController
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.factories.ContextFactory
 import org.beckn.one.sandbox.bap.factories.LoggingFactory
 import org.beckn.one.sandbox.bap.message.services.ProtocolResponseStorageService
-import org.beckn.protocol.schemas.ProtocolContext
-import org.beckn.protocol.schemas.ProtocolOnSearch
+import org.beckn.protocol.schemas.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class OnSearchCallbackController @Autowired constructor(
-  store: ProtocolResponseStorageService<ProtocolOnSearch>,
+class OnCancelCallbackController @Autowired constructor(
+  store: ProtocolResponseStorageService<ProtocolOnCancel>,
   loggingFactory: LoggingFactory,
   loggingService: LoggingService,
   val contextFactory: ContextFactory
-): AbstractCallbackController<ProtocolOnSearch>(store, loggingFactory, loggingService) {
+): AbstractCallbackController<ProtocolOnCancel>(store, loggingFactory, loggingService) {
 
-  fun onSearch(@RequestBody searchResponse: ProtocolOnSearch) = onCallback(
-      searchResponse,
-      ProtocolContext.Action.ON_SEARCH
+  fun onCancel(@RequestBody cancelResponse: ProtocolOnCancel) = onCallback(
+    cancelResponse,
+      ProtocolContext.Action.ON_CONFIRM
     )
 }
