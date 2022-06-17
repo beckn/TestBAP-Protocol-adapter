@@ -1,12 +1,12 @@
 package org.beckn.one.sandbox.bap.client.support.controllers
 
 import org.beckn.one.sandbox.bap.client.external.bap.ProtocolClient
-import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractOnPollController
+import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractClientOnPollController
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientErrorResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientSupportResponse
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.errors.HttpError
 import org.beckn.one.sandbox.bap.factories.ContextFactory
@@ -22,20 +22,19 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OnSupportController @Autowired constructor(
-  onPollService: GenericOnPollService<ProtocolOnSupport, ClientSupportResponse>,
+  onPollService: GenericClientOnPollService<ProtocolOnSupport, ClientSupportResponse>,
   val contextFactory: ContextFactory,
   val protocolClient: ProtocolClient,
   loggingFactory: LoggingFactory,
   loggingService: LoggingService,
-) : AbstractOnPollController<ProtocolOnSupport, ClientSupportResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
+) : AbstractClientOnPollController<ProtocolOnSupport, ClientSupportResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
 
   @RequestMapping("/client/v1/on_support")
   @ResponseBody
   fun onSupportOrderV1(
     @RequestParam messageId: String
   ): ResponseEntity<out ClientResponse> = onPoll(
-      messageId,
-      protocolClient.getSupportResponseCall(messageId),
+      contextFactory.create(messageId= messageId),null, null, null,
       ProtocolContext.Action.ON_SUPPORT
   )
 
@@ -51,8 +50,7 @@ class OnSupportController @Autowired constructor(
 
       for (messageId in messageIdArray) {
         val bapResult = onPoll(
-            messageId,
-            protocolClient.getSupportResponseCall(messageId),
+          contextFactory.create(messageId= messageId),null, null, null,
             ProtocolContext.Action.ON_SUPPORT
         )
         when (bapResult.statusCode.value()) {

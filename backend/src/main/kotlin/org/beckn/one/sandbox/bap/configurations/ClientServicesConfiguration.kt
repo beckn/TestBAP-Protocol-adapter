@@ -11,9 +11,10 @@ import org.beckn.one.sandbox.bap.client.order.status.mappers.OrderStatusClientRe
 import org.beckn.one.sandbox.bap.client.policy.mappers.OnCancellationReasonsResponseMapper
 import org.beckn.one.sandbox.bap.client.rating.mappers.RatingClientResponseMapper
 import org.beckn.one.sandbox.bap.client.shared.dtos.*
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollMapper
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.GenericProtocolClientService
+import org.beckn.one.sandbox.bap.client.shared.services.PollForResponseService
 import org.beckn.one.sandbox.bap.client.support.mappers.SupportClientResponseMapper
 import org.beckn.one.sandbox.bap.message.entities.AccountDetailsDao
 import org.beckn.one.sandbox.bap.message.entities.AddDeliveryAddressDao
@@ -98,64 +99,64 @@ class ClientServicesConfiguration @Autowired constructor(
 
   @Bean
   fun searchResultReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnSearch>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnSearch>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnSearch, ClientSearchResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun quoteReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnSelect>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnSelect>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnSelect, ClientQuoteResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun initResultReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnInit>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnInit>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnInit, ClientInitResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun confirmResultReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnConfirm>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnConfirm>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnConfirm, ClientConfirmResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun trackReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnTrack>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnTrack>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnTrack, ClientTrackResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun supportResultReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnSupport>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnSupport>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnSupport, ClientSupportResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun ratingReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnRating>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnRating>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnRating, ClientRatingResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun orderStatusReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnOrderStatus>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnOrderStatus>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnOrderStatus, ClientOrderStatusResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun onCancellationReasonsService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnCancellationReasons>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnCancellationReasons>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnCancellationReasons, ClientOrderPolicyResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
 
   @Bean
   fun cancelReplyService(
-    @Autowired protocolService: GenericProtocolClientService<ProtocolOnCancel>,
+    @Autowired protocolService: PollForResponseService<ProtocolOnCancel>,
     @Autowired transformer: GenericOnPollMapper<ProtocolOnCancel, ClientCancelResponse>
-  ) = GenericOnPollService(protocolService, transformer)
+  ) = GenericClientOnPollService(protocolService, transformer)
 
   @Bean
   fun addDeliveryAddressRepo(

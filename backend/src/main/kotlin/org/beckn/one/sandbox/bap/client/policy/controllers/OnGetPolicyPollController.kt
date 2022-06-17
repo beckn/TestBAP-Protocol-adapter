@@ -1,9 +1,9 @@
 package org.beckn.one.sandbox.bap.client.policy.controllers
 
 import org.beckn.one.sandbox.bap.client.external.bap.ProtocolClient
-import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractOnPollController
+import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractClientOnPollController
 import org.beckn.one.sandbox.bap.client.shared.dtos.*
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.factories.ContextFactory
 import org.beckn.one.sandbox.bap.factories.LoggingFactory
@@ -18,20 +18,19 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OnGetPolicyPollController @Autowired constructor(
-  onPollService: GenericOnPollService<ProtocolOnCancellationReasons, ClientOrderPolicyResponse>,
-  contextFactory: ContextFactory,
-  val protocolClient: ProtocolClient,
-  loggingFactory: LoggingFactory,
-  loggingService: LoggingService,
-) : AbstractOnPollController<ProtocolOnCancellationReasons, ClientOrderPolicyResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
+    onPollService: GenericClientOnPollService<ProtocolOnCancellationReasons, ClientOrderPolicyResponse>,
+    val contextFactory: ContextFactory,
+    val protocolClient: ProtocolClient,
+    loggingFactory: LoggingFactory,
+    loggingService: LoggingService,
+) : AbstractClientOnPollController<ProtocolOnCancellationReasons, ClientOrderPolicyResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
 
   @RequestMapping("/client/v1/on_cancellation_reasons")
   @ResponseBody
   fun onCancellationReasonsV1(
     @RequestParam messageId: String
   ): ResponseEntity<out ClientResponse> = onPoll(
-      messageId,
-      protocolClient.getOnCancellationReasonsResponsesCall(messageId),
+      contextFactory.create(messageId= messageId),null, null, null,
       ProtocolContext.Action.ON_CANCEL
   )
 }

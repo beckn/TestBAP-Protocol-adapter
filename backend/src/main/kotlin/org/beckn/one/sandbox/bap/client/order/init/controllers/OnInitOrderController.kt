@@ -1,11 +1,11 @@
 package org.beckn.one.sandbox.bap.client.order.init.controllers
 
 import org.beckn.one.sandbox.bap.client.external.bap.ProtocolClient
-import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractOnPollController
+import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractClientOnPollController
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientInitResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientResponse
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.errors.HttpError
 import org.beckn.one.sandbox.bap.factories.ContextFactory
@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OnInitOrderController @Autowired constructor(
-  val onPollService: GenericOnPollService<ProtocolOnInit, ClientInitResponse>,
+  val onPollService: GenericClientOnPollService<ProtocolOnInit, ClientInitResponse>,
   val contextFactory: ContextFactory,
   val protocolClient: ProtocolClient,
   loggingFactory: LoggingFactory,
   loggingService: LoggingService,
-) : AbstractOnPollController<ProtocolOnInit, ClientInitResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
+) : AbstractClientOnPollController<ProtocolOnInit, ClientInitResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
   val log: Logger = LoggerFactory.getLogger(this::class.java)
 
   @RequestMapping("/client/v1/on_initialize_order")
@@ -36,8 +36,7 @@ class OnInitOrderController @Autowired constructor(
   fun onInitOrderV1(
     @RequestParam messageId: String
   ): ResponseEntity<out ClientResponse> = onPoll(
-    messageId,
-    protocolClient.getInitResponsesCall(messageId),
+    contextFactory.create(messageId= messageId),null, null, null,
     ProtocolContext.Action.ON_INIT
   )
 
@@ -54,8 +53,8 @@ class OnInitOrderController @Autowired constructor(
       var okResponseInit: MutableList<ClientInitResponse> = ArrayList()
 
         for (messageId in messageIdArray) {
-          onPollService.onPoll(contextFactory.create(messageId = messageId),
-            protocolClient.getInitResponsesCall(messageId))
+          onPollService.onPoll(contextFactory.create(messageId= messageId),null, null, null,
+            ProtocolContext.Action.ON_INIT)
             .fold(
             {
               okResponseInit.add(

@@ -3,12 +3,12 @@ package org.beckn.one.sandbox.bap.client.order.status.controllers
 import org.beckn.one.sandbox.bap.auth.utils.SecurityUtil
 import org.beckn.one.sandbox.bap.client.external.bap.ProtocolClient
 import org.beckn.one.sandbox.bap.client.order.status.services.OnOrderStatusService
-import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractOnPollController
+import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractClientOnPollController
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientErrorResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientOrderStatusResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientResponse
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.errors.HttpError
 import org.beckn.one.sandbox.bap.factories.ContextFactory
@@ -26,19 +26,19 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OnOrderStatusPollController(
-  onPollService: GenericOnPollService<ProtocolOnOrderStatus, ClientOrderStatusResponse>,
+  onPollService: GenericClientOnPollService<ProtocolOnOrderStatus, ClientOrderStatusResponse>,
   val contextFactory: ContextFactory,
   val mapping: OnOrderProtocolToEntityOrder,
   val protocolClient: ProtocolClient,
   val onOrderStatusService: OnOrderStatusService,
   loggingFactory: LoggingFactory,
   loggingService: LoggingService,
-) : AbstractOnPollController<ProtocolOnOrderStatus, ClientOrderStatusResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
+) : AbstractClientOnPollController<ProtocolOnOrderStatus, ClientOrderStatusResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
 
   @RequestMapping("/client/v1/on_order_status")
   @ResponseBody
   fun onOrderStatusV1(@RequestParam orderId: String): ResponseEntity<out ClientResponse> =
-    onPoll(orderId, protocolClient.getOrderByIdStatusResponsesCall(orderId), ProtocolContext.Action.ON_STATUS)
+    onPoll(contextFactory.create(),null, null, orderId, ProtocolContext.Action.ON_STATUS)
 
   @RequestMapping("/client/v2/on_order_status")
   @ResponseBody
@@ -50,11 +50,8 @@ class OnOrderStatusPollController(
         if (SecurityUtil.getSecuredUserDetail() != null) {
           val user = SecurityUtil.getSecuredUserDetail()
           for (orderId in orderIdArray) {
-            val messageId = contextFactory.create().messageId
             val bapResult = onPoll(
-              messageId,
-              protocolClient.getOrderByIdStatusResponsesCall(orderId),
-              ProtocolContext.Action.ON_SEARCH
+              contextFactory.create(),null, null, orderId, ProtocolContext.Action.ON_STATUS
             )
             when (bapResult.statusCode.value()) {
               200 -> {

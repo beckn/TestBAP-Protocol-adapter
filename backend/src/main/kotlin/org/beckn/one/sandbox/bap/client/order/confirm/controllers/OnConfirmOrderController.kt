@@ -3,11 +3,11 @@ package org.beckn.one.sandbox.bap.client.order.confirm.controllers
 import org.beckn.one.sandbox.bap.auth.utils.SecurityUtil
 import org.beckn.one.sandbox.bap.client.external.bap.ProtocolClient
 import org.beckn.one.sandbox.bap.client.order.confirm.services.OnConfirmOrderService
-import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractOnPollController
+import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractClientOnPollController
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientConfirmResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientResponse
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.errors.HttpError
 import org.beckn.one.sandbox.bap.errors.database.DatabaseError
@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OnConfirmOrderController @Autowired constructor(
-  onPollService: GenericOnPollService<ProtocolOnConfirm, ClientConfirmResponse>,
+  onPollService: GenericClientOnPollService<ProtocolOnConfirm, ClientConfirmResponse>,
   val contextFactory: ContextFactory,
   val protocolClient: ProtocolClient,
   val mapping: OnOrderProtocolToEntityOrder,
   val onConfirmOrderService: OnConfirmOrderService,
   loggingFactory: LoggingFactory,
   loggingService: LoggingService,
-) : AbstractOnPollController<ProtocolOnConfirm, ClientConfirmResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
+) : AbstractClientOnPollController<ProtocolOnConfirm, ClientConfirmResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
   val log: Logger = LoggerFactory.getLogger(this::class.java)
 
   @RequestMapping("/client/v1/on_confirm_order")
@@ -43,8 +43,7 @@ class OnConfirmOrderController @Autowired constructor(
   fun onConfirmOrderV1(
     @RequestParam messageId: String
   ): ResponseEntity<out ClientResponse> = onPoll(
-    messageId,
-    protocolClient.getConfirmResponsesCall(messageId),
+    contextFactory.create(messageId= messageId),null, null, null,
     ProtocolContext.Action.ON_CONFIRM
   )
 
@@ -60,9 +59,8 @@ class OnConfirmOrderController @Autowired constructor(
         var okResponseConfirmOrder: MutableList<ClientConfirmResponse> = ArrayList()
           for (messageId in messageIdArray) {
             val bapResult = onPoll(
-              messageId,
-              protocolClient.getConfirmResponsesCall(messageId),
-              ProtocolContext.Action.ON_SEARCH
+              contextFactory.create(messageId= messageId),null, null, null,
+              ProtocolContext.Action.ON_CONFIRM
             )
             when (bapResult.statusCode.value()) {
               200 -> {

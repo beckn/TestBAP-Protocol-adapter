@@ -77,63 +77,53 @@ class ProtocolServicesConfiguration {
 
   @Bean
   fun pollForSearchResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnSearch>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
   @Bean
   fun pollForSelectResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnSelect>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService(responseStorageService)
 
   @Bean
   fun pollForInitResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnInit>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
   @Bean
   fun pollForConfirmResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnConfirm>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService(responseStorageService)
 
   @Bean
   fun pollForTrackResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnTrack>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
   @Bean
   fun pollForSupportResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnSupport>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
   @Bean
   fun pollForRatingResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnRating>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
   @Bean
   fun pollForCancelResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnCancel>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
   @Bean
   fun pollForOrderStatusResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnOrderStatus>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
 
   @Bean
   fun pollForCancellationReasonsResponseService(
-    messageService: MessageService,
     responseStorageService: ProtocolResponseStorageService<ProtocolOnCancellationReasons>
-  ) = PollForResponseService(messageService, responseStorageService)
+  ) = PollForResponseService( responseStorageService)
 
 }

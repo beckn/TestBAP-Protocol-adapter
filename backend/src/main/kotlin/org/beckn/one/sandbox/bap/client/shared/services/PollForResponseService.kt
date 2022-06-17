@@ -9,7 +9,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 open class PollForResponseService<Protocol: ProtocolResponse> constructor(
-  private val messageService: MessageService,
   private val responseStorageService: ProtocolResponseStorageService<Protocol>
 ) {
   private val log: Logger = LoggerFactory.getLogger(this::class.java)

@@ -1,12 +1,12 @@
 package org.beckn.one.sandbox.bap.client.fulfillment.track.controllers
 
 import org.beckn.one.sandbox.bap.client.external.bap.ProtocolClient
-import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractOnPollController
+import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractClientOnPollController
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientErrorResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientTrackResponse
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.errors.HttpError
 import org.beckn.one.sandbox.bap.factories.ContextFactory
@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OnTrackPollController(
-  onPollService: GenericOnPollService<ProtocolOnTrack, ClientTrackResponse>,
+  onPollService: GenericClientOnPollService<ProtocolOnTrack, ClientTrackResponse>,
   val contextFactory: ContextFactory,
   val protocolClient: ProtocolClient,
   loggingFactory: LoggingFactory,
   loggingService: LoggingService,
-) : AbstractOnPollController<ProtocolOnTrack, ClientTrackResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
+) : AbstractClientOnPollController<ProtocolOnTrack, ClientTrackResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
 
   @RequestMapping("/client/v1/on_track")
   @ResponseBody
   fun onTrack(@RequestParam messageId: String): ResponseEntity<out ClientResponse> =
-    onPoll(messageId, protocolClient.getTrackResponsesCall(messageId), ProtocolContext.Action.ON_SEARCH)
+    onPoll(contextFactory.create(messageId= messageId),null, null, null, ProtocolContext.Action.ON_SEARCH)
 
   @RequestMapping("/client/v2/on_track")
   @ResponseBody
@@ -42,8 +42,7 @@ class OnTrackPollController(
 
       for (messageId in messageIdArray) {
         val bapResult = onPoll(
-          messageId,
-          protocolClient.getTrackResponsesCall(messageId),
+          contextFactory.create(messageId= messageId),null, null, null,
           ProtocolContext.Action.ON_SEARCH
         )
         when (bapResult.statusCode.value()) {

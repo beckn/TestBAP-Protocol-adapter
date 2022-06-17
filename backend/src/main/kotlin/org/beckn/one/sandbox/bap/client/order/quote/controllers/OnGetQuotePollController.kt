@@ -1,16 +1,15 @@
 package org.beckn.one.sandbox.bap.client.order.quote.controllers
 
 import org.beckn.one.sandbox.bap.client.external.bap.ProtocolClient
-import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractOnPollController
+import org.beckn.one.sandbox.bap.client.shared.controllers.AbstractClientOnPollController
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientQuoteResponse
 import org.beckn.one.sandbox.bap.client.shared.dtos.ClientResponse
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.services.GenericOnPollService
+import org.beckn.one.sandbox.bap.client.shared.services.GenericClientOnPollService
 import org.beckn.one.sandbox.bap.client.shared.services.LoggingService
 import org.beckn.one.sandbox.bap.errors.HttpError
 import org.beckn.one.sandbox.bap.factories.ContextFactory
 import org.beckn.one.sandbox.bap.factories.LoggingFactory
-import org.beckn.protocol.schemas.ProtocolAckResponse
 import org.beckn.protocol.schemas.ProtocolContext
 
 import org.beckn.protocol.schemas.ProtocolOnSelect
@@ -26,18 +25,18 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OnGetQuotePollController @Autowired constructor(
-  val onPollService: GenericOnPollService<ProtocolOnSelect, ClientQuoteResponse>,
+  val onPollService: GenericClientOnPollService<ProtocolOnSelect, ClientQuoteResponse>,
   val contextFactory: ContextFactory,
   private val protocolClient: ProtocolClient,
   private val loggingFactory: LoggingFactory,
   private val loggingService: LoggingService,
-) : AbstractOnPollController<ProtocolOnSelect, ClientQuoteResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
+) : AbstractClientOnPollController<ProtocolOnSelect, ClientQuoteResponse>(onPollService, contextFactory, loggingFactory, loggingService) {
   val log: Logger = LoggerFactory.getLogger(this::class.java)
 
   @RequestMapping("/client/v1/on_get_quote")
   @ResponseBody
   fun onGetQuoteV1(@RequestParam messageId: String): ResponseEntity<out ClientResponse> =
-    onPoll(messageId, protocolClient.getSelectResponsesCall(messageId), ProtocolContext.Action.ON_SELECT)
+    onPoll(contextFactory.create(messageId= messageId),null, null, null, ProtocolContext.Action.ON_SELECT)
 
   @RequestMapping("/client/v2/on_get_quote")
   @ResponseBody
@@ -50,8 +49,7 @@ class OnGetQuotePollController @Autowired constructor(
          val context = contextFactory.create(messageId = msgId)
          setLogging(context, null)
           onPollService.onPoll(
-            context ,
-            protocolClient.getSelectResponsesCall(msgId)
+            contextFactory.create(messageId= msgId),null, null, null, ProtocolContext.Action.ON_SELECT
           ).fold(
             {
               setLogging(context, it)

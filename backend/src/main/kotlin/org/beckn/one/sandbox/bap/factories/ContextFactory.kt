@@ -16,6 +16,7 @@ class ContextFactory @Autowired constructor(
   private val uuidFactory: UuidFactory,
   private val clock: Clock = Clock.systemUTC()
 ) {
+  
   fun create(
     transactionId: String = uuidFactory.create(),
     messageId: String = uuidFactory.create(),
