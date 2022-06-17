@@ -20,6 +20,6 @@ class OnOrderStatusCallbackController @Autowired constructor(
 
   fun onOrderStatus(@RequestBody statusResponse: ProtocolOnOrderStatus) = onCallback(
     statusResponse,
-      ProtocolContext.Action.ON_SELECT
+      ProtocolContext.Action.ON_STATUS
     )
 }

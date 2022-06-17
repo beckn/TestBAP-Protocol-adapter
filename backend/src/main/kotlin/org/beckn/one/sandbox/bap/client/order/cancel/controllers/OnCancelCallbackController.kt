@@ -20,6 +20,6 @@ class OnCancelCallbackController @Autowired constructor(
 
   fun onCancel(@RequestBody cancelResponse: ProtocolOnCancel) = onCallback(
     cancelResponse,
-      ProtocolContext.Action.ON_CONFIRM
+      ProtocolContext.Action.ON_CANCEL
     )
 }

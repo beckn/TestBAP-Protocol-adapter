@@ -20,6 +20,6 @@ class OnTrackCallbackController @Autowired constructor(
 
   fun onTrack(@RequestBody trackResponse: ProtocolOnTrack) = onCallback(
     trackResponse,
-      ProtocolContext.Action.ON_CONFIRM
+      ProtocolContext.Action.ON_TRACK
     )
 }

@@ -2,10 +2,15 @@ package org.beckn.one.sandbox.bap.client.shared.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.beckn.one.sandbox.bap.client.discovery.controllers.OnSearchCallbackController
+import org.beckn.one.sandbox.bap.client.fulfillment.track.controllers.OnTrackCallbackController
+import org.beckn.one.sandbox.bap.client.order.cancel.controllers.OnCancelCallbackController
 import org.beckn.one.sandbox.bap.client.order.confirm.controllers.OnConfirmCallbackController
 import org.beckn.one.sandbox.bap.client.order.init.controllers.OnInitCallbackController
 import org.beckn.one.sandbox.bap.client.order.quote.controllers.OnGetQuoteCallbackController
+import org.beckn.one.sandbox.bap.client.order.status.controllers.OnOrderStatusCallbackController
+import org.beckn.one.sandbox.bap.client.rating.controllers.OnRatingCallbackController
 import org.beckn.one.sandbox.bap.client.shared.dtos.SharedResponse
+import org.beckn.one.sandbox.bap.client.support.controllers.OnSupportCallbackController
 import org.beckn.one.sandbox.bap.factories.ContextFactory
 import org.beckn.protocol.schemas.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +30,11 @@ class SharedController @Autowired constructor(
   val onGetQuoteCallbackController: OnGetQuoteCallbackController,
   val onInitCallbackController: OnInitCallbackController,
   val onConfirmCallbackController: OnConfirmCallbackController,
+  val onRatingCallbackController: OnRatingCallbackController,
+  val onSupportCallbackController: OnSupportCallbackController,
+  val onOrderStatusCallbackController: OnOrderStatusCallbackController,
+  val onCancelCallbackController: OnCancelCallbackController,
+  val onTraCallbackController: OnTrackCallbackController,
 ) {
 
   @PostMapping(
@@ -53,19 +63,24 @@ class SharedController @Autowired constructor(
         return onConfirmCallbackController.onConfirmOrder(request)
       }
       ProtocolContext.Action.ON_SUPPORT->{
-
+        val request= objectMapper.readValue(parameter, ProtocolOnSupport::class.java)
+        return onSupportCallbackController.onSupport(request)
       }
       ProtocolContext.Action.ON_CANCEL->{
-
+        val request= objectMapper.readValue(parameter, ProtocolOnCancel::class.java)
+        return onCancelCallbackController.onCancel(request)
       }
       ProtocolContext.Action.ON_TRACK->{
-
+        val request= objectMapper.readValue(parameter, ProtocolOnTrack::class.java)
+        return onTraCallbackController.onTrack(request)
       }
       ProtocolContext.Action.ON_RATING->{
-
+        val request= objectMapper.readValue(parameter, ProtocolOnRating::class.java)
+        return onRatingCallbackController.onRating(request)
       }
       ProtocolContext.Action.ON_STATUS->{
-
+        val request= objectMapper.readValue(parameter, ProtocolOnOrderStatus::class.java)
+        return onOrderStatusCallbackController.onOrderStatus(request)
       }
     }
     return ResponseEntity.ok(ProtocolAckResponse(null, ResponseMessage.ack()))

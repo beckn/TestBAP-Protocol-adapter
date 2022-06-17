@@ -18,13 +18,8 @@ class OnSupportCallbackController @Autowired constructor(
   val contextFactory: ContextFactory
 ): AbstractCallbackController<ProtocolOnSupport>(store, loggingFactory, loggingService) {
 
-  @PostMapping(
-    "/protocol/v1/on_support",
-    consumes = [MediaType.APPLICATION_JSON_VALUE],
-    produces = [MediaType.APPLICATION_JSON_VALUE],
-  )
-  fun onOrderStatus(@RequestBody supportResponse: ProtocolOnSupport) = onCallback(
+  fun onSupport(@RequestBody supportResponse: ProtocolOnSupport) = onCallback(
     supportResponse,
-      ProtocolContext.Action.ON_SELECT
+      ProtocolContext.Action.ON_SUPPORT
     )
 }
