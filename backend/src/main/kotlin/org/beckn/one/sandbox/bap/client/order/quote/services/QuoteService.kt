@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 @Service
 class QuoteService @Autowired constructor(
   private val registryService: RegistryService,
-  private val bppSelectService: BppSelectService,
+  private val bppSelectService: ProtocolSelectService,
   private val selectedItemMapper: SelectedItemMapper,
 ) {
   private val log: Logger = LoggerFactory.getLogger(QuoteService::class.java)
@@ -40,17 +40,12 @@ class QuoteService @Autowired constructor(
       log.info("Cart contains items from more than one provider, returning error. Cart: {}", cart)
       return Either.Left(CartError.MultipleProviders)
     }
-    return registryService.lookupBppById(cart.items.first().bppId)
-      .flatMap { Either.Right(it.first()) }
-      .flatMap {
-        bppSelectService.select(
-          context,
-          bppUri = it.subscriber_url,
-          providerId = cart.items.first().provider.id,
-          providerLocation = ProtocolLocation(id = cart.items.first().provider.locations?.first()),
-          items = cart.items.map { cartItem -> selectedItemMapper.dtoToProtocol(cartItem) }
-        )
-      }
+    return bppSelectService.select(
+      context,
+      providerId = cart.items.first().provider.id,
+      providerLocation = ProtocolLocation(id = cart.items.first().provider.locations?.first()),
+      items = cart.items.map { cartItem -> selectedItemMapper.dtoToProtocol(cartItem) }
+    )
   }
 
   private fun areMultipleProviderItemsSelected(items: List<CartItemDto>) =

@@ -18,15 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class BppSupportService @Autowired constructor(
+class ProtocolSupportService @Autowired constructor(
   private val bppServiceClientFactory: ProtocolClientFactory
 ) {
-  private val log: Logger = LoggerFactory.getLogger(BppSupportService::class.java)
+  private val log: Logger = LoggerFactory.getLogger(ProtocolSupportService::class.java)
 
-  fun support(bppUri: String, context: ProtocolContext, refId: String): Either<BppError, ProtocolAckResponse> =
+  fun support(context: ProtocolContext, refId: String): Either<BppError, ProtocolAckResponse> =
     Either.catch {
-      log.info("Invoking support API on BPP: {}", bppUri)
-      val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+      log.info("Invoking support API on Protocol Server: {}")
+      val bppServiceClient = bppServiceClientFactory.getClient(null)
       val httpResponse =
         bppServiceClient.support(
           ProtocolSupportRequest(

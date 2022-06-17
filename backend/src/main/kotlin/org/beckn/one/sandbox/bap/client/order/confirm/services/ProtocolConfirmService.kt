@@ -1,4 +1,4 @@
-package org.beckn.one.sandbox.bap.client.order.init.services
+package org.beckn.one.sandbox.bap.client.order.confirm.services
 
 import arrow.core.Either
 import arrow.core.Either.Left
@@ -18,22 +18,22 @@ import org.springframework.stereotype.Service
 import retrofit2.Response
 
 @Service
-class BppInitService @Autowired constructor(
+class ProtocolConfirmService @Autowired constructor(
   private val bppServiceClientFactory: ProtocolClientFactory
 ) {
-  private val log: Logger = LoggerFactory.getLogger(BppInitService::class.java)
+  private val log: Logger = LoggerFactory.getLogger(ProtocolConfirmService::class.java)
 
-  fun init(context: ProtocolContext, bppUri: String, order: OrderDto): Either<BppError, ProtocolAckResponse> {
+  fun confirm(context: ProtocolContext, order: OrderDto): Either<BppError, ProtocolAckResponse> {
     return Either.catch {
-      log.info("Invoking Init API on BPP: {}", bppUri)
-      val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+      log.info("Invoking Confirm API on protocol server: {}")
+      val bppServiceClient = bppServiceClientFactory.getClient(null)
       val httpResponse =
-        invokeBppInitApi(
+        invokeBppConfirmApi(
           bppServiceClient = bppServiceClient,
           context = context,
           order = order
         )
-      log.info("BPP init API response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
+      log.info("BPP confirm API response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
       return when {
         httpResponse.isInternalServerError() -> Left(BppError.Internal)
         !httpResponse.hasBody() -> Left(BppError.NullResponse)
@@ -41,27 +41,27 @@ class BppInitService @Autowired constructor(
         else -> Right(httpResponse.body()!!)
       }
     }.mapLeft {
-      log.error("Error when initiating init", it)
+      log.error("Error when initiating confirm", it)
       BppError.Internal
     }
   }
 
-  private fun invokeBppInitApi(
+  private fun invokeBppConfirmApi(
     bppServiceClient: BppClient,
     context: ProtocolContext,
     order: OrderDto
   ): Response<ProtocolAckResponse> {
-    val initRequest = ProtocolInitRequest(
+    val confirmRequest = ProtocolConfirmRequest(
       context = context,
-      ProtocolInitRequestMessage(
+      ProtocolConfirmRequestMessage(
         order = ProtocolOrder(
-          provider = order?.items?.first()?.provider?.let {
+          provider = order.items?.first()?.provider?.let {
             ProtocolSelectMessageSelectedProvider(
               id = it?.id,
-              locations = listOf(ProtocolSelectMessageSelectedProviderLocations(id = it?.locations?.first() ?: "" ))
+              locations = listOf(ProtocolSelectMessageSelectedProviderLocations(id = it?.locations!!.first()))
             )
           },
-          items = order.items!!.map { ProtocolSelectMessageSelectedItems(id = it.id, quantity = it.quantity, ondcReturnWindow = null,
+          items = order.items!!.map { ProtocolSelectMessageSelectedItems(id = it.id, quantity = it.quantity,  ondcReturnWindow = null,
             ondcStatutoryPackagedFood = null, ondcStatutoryPackagedCommodities = null) },
           billing = order.billingInfo,
           fulfillment = ProtocolFulfillment(
@@ -71,15 +71,20 @@ class BppInitService @Autowired constructor(
                 email = order.deliveryInfo.email
               ), location = order.deliveryInfo.location
             ),
-            type = order.deliveryInfo.type,
-            customer = ProtocolCustomer(ProtocolPerson(name = order.deliveryInfo.name)),
+            type = "home_delivery",
+            customer = ProtocolCustomer(person = ProtocolPerson(name = order.deliveryInfo.name)),
             provider_id = order.items?.first()?.provider?.id
           ),
           addOns = emptyList(),
           offers = emptyList(),
+          payment = ProtocolPayment(
+            params = mapOf("amount" to order.payment!!.paidAmount.toString()),
+            status = ProtocolPayment.Status.PAID
+          )
         )
       )
     )
-    return bppServiceClient.init(initRequest).execute()
+    log.info("Confirm API request body: {}", confirmRequest)
+    return bppServiceClient.confirm(confirmRequest).execute()
   }
 }

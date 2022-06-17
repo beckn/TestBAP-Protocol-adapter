@@ -15,7 +15,7 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 class OrderStatusServiceSpec : DescribeSpec() {
   private val context = ContextFactoryInstance.create().create()
   private val registryService = mock(RegistryService::class.java)
-  private val bppOrderStatusService = mock(BppOrderStatusService::class.java)
+  private val bppOrderStatusService = mock(ProtocolOrderStatusService::class.java)
   private val orderStatusService = OrderStatusService(
     registryService = registryService,
     bppOrderStatusService = bppOrderStatusService,

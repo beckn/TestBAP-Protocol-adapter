@@ -26,7 +26,7 @@ internal class BppConfirmServiceSpec : DescribeSpec() {
   private val clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
   private val uuidFactory = mock(UuidFactory::class.java)
   private val contextFactory = ContextFactoryInstance.create(uuidFactory, clock)
-  private val bppConfirmService = BppConfirmService(bppServiceClientFactory)
+  private val bppConfirmService = ProtocolConfirmService(bppServiceClientFactory)
   private val bppServiceClient: BppClient = mock(BppClient::class.java)
   private val bppUri = "https://bpp1.com"
 

@@ -14,7 +14,7 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 
 class QuoteServiceSpec : DescribeSpec() {
   private val registryService = mock(RegistryService::class.java)
-  private val bppSelectService = mock(BppSelectService::class.java)
+  private val bppSelectService = mock(ProtocolSelectService::class.java)
   private val context = ContextFactoryInstance.create().create()
   private val quoteService = QuoteService(
     registryService = registryService,

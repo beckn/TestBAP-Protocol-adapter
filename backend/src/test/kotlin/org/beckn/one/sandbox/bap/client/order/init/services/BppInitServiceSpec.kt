@@ -24,7 +24,7 @@ internal class BppInitServiceSpec : DescribeSpec() {
   private val clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
   private val uuidFactory = mock(UuidFactory::class.java)
   private val contextFactory = ContextFactoryInstance.create(uuidFactory, clock)
-  private val bppInitService = BppInitService(bppServiceClientFactory)
+  private val bppInitService = ProtocolInitService(bppServiceClientFactory)
   private val bppServiceClient: BppClient = mock(BppClient::class.java)
   private val bppUri = "https://bpp1.com"
 

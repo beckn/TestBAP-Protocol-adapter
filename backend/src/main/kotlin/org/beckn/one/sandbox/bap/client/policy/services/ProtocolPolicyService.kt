@@ -14,21 +14,21 @@ import org.springframework.stereotype.Service
 import retrofit2.Response
 
 @Service
-class BppPolicyService @Autowired constructor(
+class ProtocolPolicyService @Autowired constructor(
   private val bppServiceClientFactory: ProtocolClientFactory
 ) {
-  private val log: Logger = LoggerFactory.getLogger(BppPolicyService::class.java)
+  private val log: Logger = LoggerFactory.getLogger(ProtocolPolicyService::class.java)
 
-  fun getCancellationReasons(bppUri: String, context: ProtocolContext): Either<BppError, ProtocolAckResponse> =
+  fun getCancellationReasons(context: ProtocolContext): Either<BppError, ProtocolAckResponse> =
     Either.catch {
-      log.info("Invoking get cancellation reasons API on BPP: {}", bppUri)
-      val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+      log.info("Invoking get cancellation reasons API on Protocol Server: {}")
+      val bppServiceClient = bppServiceClientFactory.getClient(null)
       val httpResponse = bppServiceClient.getCancellationReasons(
         ProtocolGetPolicyRequest(
           context = context
         )
       ).execute()
-      log.info("BPP get cancellation reasons response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
+      log.info("Protocol Server get cancellation reasons response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
 
       return when {
         httpResponse.isInternalServerError() -> Either.Left(BppError.Internal)
@@ -37,27 +37,27 @@ class BppPolicyService @Autowired constructor(
         else -> Either.Right(httpResponse.body()!!)
       }
     }.mapLeft {
-      log.error("Error when invoking BPP get cancellation reasons API", it)
+      log.error("Error when invoking Protocol Server get cancellation reasons API", it)
       BppError.Internal
     }
 
-  fun getRatingCategories(bppUri: String, context: ProtocolContext): Either<BppError, List<ProtocolRatingCategory>> =
+  fun getRatingCategories(context: ProtocolContext): Either<BppError, List<ProtocolRatingCategory>> =
     Either.catch {
-      log.info("Invoking get rating categories API on BPP: {}", bppUri)
-      val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+      log.info("Invoking get rating categories API on Protocol Server: {}")
+      val bppServiceClient = bppServiceClientFactory.getClient(null)
       val httpResponse = bppServiceClient.getRatingCategories(
         ProtocolGetPolicyRequest(
           context = context
         )
       ).execute()
-      log.info("BPP get rating categories response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
+      log.info("Protocol Server get rating categories response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
       return when{
         httpResponse.isInternalServerError() -> Either.Left(BppError.Internal)
         !httpResponse.hasBody() || hasEmptyBody(httpResponse) -> Either.Left(BppError.NullResponse)
         else -> Either.Right(httpResponse.body()!!)
       }
     }.mapLeft {
-      log.error("Error when invoking BPP get rating categories reasons API", it)
+      log.error("Error when invoking Protocol Server get rating categories reasons API", it)
       BppError.Internal
     }
 

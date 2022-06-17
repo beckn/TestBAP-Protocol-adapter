@@ -2,16 +2,13 @@ package org.beckn.one.sandbox.bap.client.order.confirm.services
 
 import arrow.core.Either
 import arrow.core.flatMap
-import arrow.core.left
 import org.beckn.one.sandbox.bap.client.shared.dtos.OrderDto
 import org.beckn.one.sandbox.bap.client.shared.dtos.OrderItemDto
 import org.beckn.one.sandbox.bap.client.shared.dtos.OrderPayment
 import org.beckn.one.sandbox.bap.client.shared.errors.CartError
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.errors.gateway.GatewaySearchError
 import org.beckn.one.sandbox.bap.client.shared.services.RegistryService
 import org.beckn.one.sandbox.bap.errors.HttpError
-import org.beckn.one.sandbox.bap.extensions.orElse
 import org.beckn.protocol.schemas.ProtocolAckResponse
 import org.beckn.protocol.schemas.ProtocolContext
 import org.slf4j.Logger
@@ -21,9 +18,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class ConfirmOrderService @Autowired constructor(
-  private val bppConfirmService: BppConfirmService,
-  private val registryService: RegistryService,
-  private val log: Logger = LoggerFactory.getLogger(ConfirmOrderService::class.java)
+    private val bppConfirmService: ProtocolConfirmService,
+    private val registryService: RegistryService,
+    private val log: Logger = LoggerFactory.getLogger(ConfirmOrderService::class.java)
 ) {
   fun confirmOrder(
     context: ProtocolContext,
@@ -51,15 +48,10 @@ class ConfirmOrderService @Autowired constructor(
       return Either.Left(BppError.PendingPayment)
     }
 
-    return registryService.lookupBppById(order.items.first().bppId)
-      .flatMap {
-        bppConfirmService.confirm(
-          context,
-          bppUri = it.first().subscriber_url,
-          order = order
-        ) //todo: when payment is integrated, payment object can be passed down to get specifics of amount paid, etc
-      }
-
+    return  bppConfirmService.confirm(
+      context,
+      order = order
+    )
   }
 
   private fun arePaymentsPending(payment: OrderPayment?): Boolean {

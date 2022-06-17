@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class RatingService @Autowired constructor(
-  private val bppRatingService: BppRatingService,
-  private val registryService: RegistryService,
-  private val log: Logger = LoggerFactory.getLogger(RatingService::class.java)
+    private val bppRatingService: ProtocolRatingService,
+    private val registryService: RegistryService,
+    private val log: Logger = LoggerFactory.getLogger(RatingService::class.java)
 ) {
 
   fun rating(

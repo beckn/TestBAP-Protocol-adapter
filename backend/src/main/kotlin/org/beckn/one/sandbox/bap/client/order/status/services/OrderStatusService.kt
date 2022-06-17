@@ -14,21 +14,16 @@ import org.springframework.stereotype.Service
 
 @Service
 class OrderStatusService @Autowired constructor(
-  private val bppOrderStatusService: BppOrderStatusService,
-  private val registryService: RegistryService,
+    private val bppOrderStatusService: ProtocolOrderStatusService,
+    private val registryService: RegistryService,
 ) {
   private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
   fun getOrderStatus(context: ProtocolContext, request: OrderStatusDto): Either<HttpError, ProtocolAckResponse?> {
     log.info("Got get order status request.  Context: {}, Order: {}", context, request)
-    return request.validate()
-      .flatMap { registryService.lookupBppById(it.context.bppId!!) }
-      .flatMap {
-        bppOrderStatusService.getOrderStatus(
-          context = context,
-          bppUri = it.first().subscriber_url,
-          message = request.message
-        )
-      }
+    return bppOrderStatusService.getOrderStatus(
+      context = context,
+      message = request.message
+    )
   }
 }

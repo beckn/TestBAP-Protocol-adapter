@@ -18,10 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class BppRatingService @Autowired constructor(
+class ProtocolRatingService @Autowired constructor(
   private val bppServiceClientFactory: ProtocolClientFactory
 ) {
-  private val log: Logger = LoggerFactory.getLogger(BppRatingService::class.java)
+  private val log: Logger = LoggerFactory.getLogger(ProtocolRatingService::class.java)
 
   fun rating(bppUri: String, context: ProtocolContext, refId: String, value: Int):
       Either<BppError, ProtocolAckResponse> =

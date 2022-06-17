@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class CancelOrderService @Autowired constructor(
-  private val bppService: BppCancelService,
-  private val registryService: RegistryService,
-  private val log: Logger = LoggerFactory.getLogger(CancelOrderService::class.java)
+    private val bppService: ProtocolCancelService,
+    private val registryService: RegistryService,
+    private val log: Logger = LoggerFactory.getLogger(CancelOrderService::class.java)
 ) {
 
   fun cancel(
@@ -34,13 +34,10 @@ class CancelOrderService @Autowired constructor(
       log.info("BPPId not present")
       return Either.Left(BppError.BppIdNotPresent)
     }
-    return registryService.lookupBppById(context.bppId!!).flatMap {
-      bppService.cancelOrder(
-        bppUri = it.first().subscriber_url,
-        context = context,
-        orderId = orderId,
-        cancellationReasonId = cancellationReasonId
-      )
-    }
+    return bppService.cancelOrder(
+      context = context,
+      orderId = orderId,
+      cancellationReasonId = cancellationReasonId
+    )
   }
 }

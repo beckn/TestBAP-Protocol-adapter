@@ -2,7 +2,6 @@ package org.beckn.one.sandbox.bap.client.order.init.services
 
 import arrow.core.Either
 import arrow.core.flatMap
-import org.beckn.one.sandbox.bap.client.external.registry.SubscriberDto
 import org.beckn.one.sandbox.bap.client.shared.dtos.OrderDto
 import org.beckn.one.sandbox.bap.client.shared.dtos.OrderItemDto
 import org.beckn.one.sandbox.bap.client.shared.errors.CartError
@@ -19,11 +18,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class InitOrderService @Autowired constructor(
-  private val bppInitService: BppInitService,
-  private val registryService: RegistryService,
-  private val log: Logger = LoggerFactory.getLogger(InitOrderService::class.java),
-  private val loggingService: LoggingService,
-  private val loggingFactory: LoggingFactory
+    private val bppInitService: ProtocolInitService,
+    private val registryService: RegistryService,
+    private val log: Logger = LoggerFactory.getLogger(InitOrderService::class.java),
+    private val loggingService: LoggingService,
+    private val loggingFactory: LoggingFactory
 ) {
   fun initOrder(
     context: ProtocolContext,
@@ -45,20 +44,10 @@ class InitOrderService @Autowired constructor(
       return Either.Left(CartError.MultipleProviders)
     }
 
-    return registryService.lookupBppById(order.items.first().bppId)
-      .flatMap {
-        val loggerRequest = loggingFactory.create(messageId = context.messageId,
-          transactionId = context.transactionId, contextTimestamp = context.timestamp.toString(),
-          action = context.action, bppId = context.bppId
-        )
-        loggingService.postLog(loggerRequest)
-
-        bppInitService.init(
-          context,
-          bppUri = it.first().subscriber_url,
-          order = order
-        )
-      }
+    return bppInitService.init(
+      context,
+      order = order
+    )
   }
 
   private fun areMultipleProviderItemsSelected(items: List<OrderItemDto>): Boolean =

@@ -3,12 +3,17 @@ package org.beckn.one.sandbox.bap.client.order.quote.services
 import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
+import arrow.core.flatMap
 import org.beckn.one.sandbox.bap.client.external.hasBody
 import org.beckn.one.sandbox.bap.client.external.isAckNegative
 import org.beckn.one.sandbox.bap.client.external.isInternalServerError
 import org.beckn.one.sandbox.bap.client.external.provider.BppClient
 import org.beckn.one.sandbox.bap.client.external.provider.ProtocolClientFactory
+import org.beckn.one.sandbox.bap.client.shared.dtos.CartDto
+import org.beckn.one.sandbox.bap.client.shared.dtos.CartItemDto
+import org.beckn.one.sandbox.bap.client.shared.errors.CartError
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
+import org.beckn.one.sandbox.bap.errors.HttpError
 import org.beckn.protocol.schemas.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,24 +22,23 @@ import org.springframework.stereotype.Service
 import retrofit2.Response
 
 @Service
-class BppSelectService @Autowired constructor(
+class ProtocolSelectService @Autowired constructor(
   private val bppServiceClientFactory: ProtocolClientFactory
 ) {
-  private val log: Logger = LoggerFactory.getLogger(BppSelectService::class.java)
+  private val log: Logger = LoggerFactory.getLogger(ProtocolSelectService::class.java)
 
   fun select(
     context: ProtocolContext,
-    bppUri: String,
     providerId: String,
     providerLocation: ProtocolLocation,
     items: List<ProtocolSelectedItem>
   ): Either<BppError, ProtocolAckResponse> {
     return Either
       .catch {
-        log.info("Invoking Select API on BPP: {}", bppUri)
-        val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+        log.info("Invoking Select API on Protocol Server: {}")
+        val bppServiceClient = bppServiceClientFactory.getClient(null)
         val httpResponse = invokeBppSelectApi(bppServiceClient, context, providerId, providerLocation, items)
-        log.info("BPP Select API response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
+        log.info("Protocol Server Select API response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
         return when {
           httpResponse.isInternalServerError() -> Left(BppError.Internal)
           !httpResponse.hasBody() -> Left(BppError.NullResponse)

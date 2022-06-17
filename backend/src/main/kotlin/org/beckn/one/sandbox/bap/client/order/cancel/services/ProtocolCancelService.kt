@@ -16,20 +16,19 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class BppCancelService @Autowired constructor(
+class ProtocolCancelService @Autowired constructor(
   private val bppServiceClientFactory: ProtocolClientFactory
 ) {
-  private val log: Logger = LoggerFactory.getLogger(BppCancelService::class.java)
+  private val log: Logger = LoggerFactory.getLogger(ProtocolCancelService::class.java)
 
   fun cancelOrder(
-    bppUri: String,
     context: ProtocolContext,
     orderId: String,
     cancellationReasonId: String
   ): Either<BppError, ProtocolAckResponse> =
     Either.catch {
-      log.info("Invoking cancel order API on BPP: {}", bppUri)
-      val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+      log.info("Invoking cancel order API on Protocol Server: {}")
+      val bppServiceClient = bppServiceClientFactory.getClient(null)
       val httpResponse = bppServiceClient.cancel(
         ProtocolCancelRequest(
           context = context,
@@ -39,7 +38,7 @@ class BppCancelService @Autowired constructor(
           )
         )
       ).execute()
-      log.info("BPP cancel order response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
+      log.info("Protocol Server cancel order response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
       return when {
         httpResponse.isInternalServerError() -> Either.Left(BppError.Internal)
         !httpResponse.hasBody() -> Either.Left(BppError.NullResponse)
@@ -47,7 +46,7 @@ class BppCancelService @Autowired constructor(
         else -> Either.Right(httpResponse.body()!!)
       }
     }.mapLeft {
-      log.error("Error when invoking BPP cancel API", it)
+      log.error("Error when invoking Protocol Server cancel API", it)
       BppError.Internal
     }
 }

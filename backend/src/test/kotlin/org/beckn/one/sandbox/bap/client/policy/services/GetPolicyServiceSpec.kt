@@ -11,7 +11,7 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 class GetPolicyServiceSpec : DescribeSpec() {
   private val context = ContextFactoryInstance.create().create()
   private val registryService = Mockito.mock(RegistryService::class.java)
-  private val bppPolicyService = Mockito.mock(BppPolicyService::class.java)
+  private val bppPolicyService = Mockito.mock(ProtocolPolicyService::class.java)
   private val getPolicyService = GetPolicyService(
     registryService = registryService,
     bppService = bppPolicyService

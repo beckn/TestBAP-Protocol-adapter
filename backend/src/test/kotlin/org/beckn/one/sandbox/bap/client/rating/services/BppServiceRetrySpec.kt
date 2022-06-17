@@ -9,7 +9,6 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import org.beckn.one.sandbox.bap.client.external.toJson
 import org.beckn.one.sandbox.bap.client.shared.errors.bpp.BppError
-import org.beckn.one.sandbox.bap.client.shared.errors.gateway.GatewaySearchError
 import org.beckn.one.sandbox.bap.common.factories.ContextFactoryInstance
 import org.beckn.one.sandbox.bap.common.factories.MockNetwork
 import org.beckn.one.sandbox.bap.factories.UuidFactory
@@ -32,8 +31,8 @@ import java.time.ZoneId
 @ActiveProfiles(value = ["test"])
 @TestPropertySource(locations = ["/application-test.yml"])
 internal class BppServiceRetrySpec @Autowired constructor(
-  private val bppService: BppRatingService,
-  val objectMapper: ObjectMapper,
+    private val bppService: ProtocolRatingService,
+    val objectMapper: ObjectMapper,
 ) : DescribeSpec() {
   private val clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
   private val uuidFactory = mock(UuidFactory::class.java)

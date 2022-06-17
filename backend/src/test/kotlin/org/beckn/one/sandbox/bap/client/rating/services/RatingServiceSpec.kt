@@ -15,7 +15,7 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 class RatingServiceSpec : DescribeSpec() {
   private val context = ContextFactoryInstance.create().create()
   private val registryService = mock(RegistryService::class.java)
-  private val bppRatingService = mock(BppRatingService::class.java)
+  private val bppRatingService = mock(ProtocolRatingService::class.java)
   private val ratingService = RatingService(registryService = registryService, bppRatingService = bppRatingService)
 
   init {

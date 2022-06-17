@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class SupportService @Autowired constructor(
-  private val bppSupportService: BppSupportService,
-  private val registryService: RegistryService,
-  private val log: Logger = LoggerFactory.getLogger(SupportService::class.java)
+    private val bppSupportService: ProtocolSupportService,
+    private val registryService: RegistryService,
+    private val log: Logger = LoggerFactory.getLogger(SupportService::class.java)
 ) {
   fun getSupport(context: ProtocolContext, supportRequestMessage: SupportRequestMessage, bppId: String?):
       Either<HttpError, ProtocolAckResponse?> {
@@ -28,13 +28,9 @@ class SupportService @Autowired constructor(
       return Either.Left(BppError.BppIdNotPresent)
     }
 
-    return registryService.lookupBppById(bppId)
-      .flatMap {
-        bppSupportService.support(
-          bppUri = it.first().subscriber_url,
-          context = context,
-          refId = supportRequestMessage.refId
-        )
-      }
+    return bppSupportService.support(
+      context = context,
+      refId = supportRequestMessage.refId
+    )
   }
 }

@@ -24,7 +24,7 @@ internal class BppSupportServiceSpec : DescribeSpec() {
   private val clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"))
   private val uuidFactory = Mockito.mock(UuidFactory::class.java)
   private val contextFactory = ContextFactoryInstance.create(uuidFactory, clock)
-  private val bppSupportService = BppSupportService(bppServiceClientFactory)
+  private val bppSupportService = ProtocolSupportService(bppServiceClientFactory)
   private val bppServiceClient: BppClient = Mockito.mock(BppClient::class.java)
   private val bppUri = "https://bpp1.com"
 

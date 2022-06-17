@@ -18,19 +18,19 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class BppOrderStatusService @Autowired constructor(
+class ProtocolOrderStatusService @Autowired constructor(
   private val bppServiceClientFactory: ProtocolClientFactory
 ) {
-  private val log: Logger = LoggerFactory.getLogger(BppOrderStatusService::class.java)
+  private val log: Logger = LoggerFactory.getLogger(ProtocolOrderStatusService::class.java)
 
-  fun getOrderStatus(bppUri: String, context: ProtocolContext, message: ProtocolOrderStatusRequestMessage):
+  fun getOrderStatus(context: ProtocolContext, message: ProtocolOrderStatusRequestMessage):
       Either<BppError, ProtocolAckResponse> = Either.catch {
-    log.info("Invoking Order Status API on BPP: {}", bppUri)
-    val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+    log.info("Invoking Order Status API on Protocol Server: {}")
+    val bppServiceClient = bppServiceClientFactory.getClient(null)
     val httpResponse =
       bppServiceClient.getOrderStatus(ProtocolOrderStatusRequest(context = context, message = message))
         .execute()
-    log.info("BPP Get Order Status API response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
+    log.info("Protocol Server Get Order Status API response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())
     return when {
       httpResponse.isInternalServerError() -> Left(BppError.Internal)
       !httpResponse.hasBody() -> Left(BppError.NullResponse)
