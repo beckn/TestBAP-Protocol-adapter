@@ -39,7 +39,7 @@ class GetPolicyController @Autowired constructor(
       },
       {
         log.info("Successfully got order policy from BPP. Message: {}", it)
-        ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+        ResponseEntity.ok(it)
       }
     )
   }

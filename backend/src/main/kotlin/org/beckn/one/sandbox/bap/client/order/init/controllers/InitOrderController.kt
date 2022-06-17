@@ -31,7 +31,7 @@ class InitOrderController @Autowired constructor(
 
   @PostMapping("/client/v1/initialize_order")
   @ResponseBody
-  fun initiOrderV1(
+  fun initOrderV1(
     @RequestBody orderRequest: OrderRequestDto
   ): ResponseEntity<ProtocolAckResponse> {
     val context = getContext(orderRequest.context.transactionId)
@@ -44,17 +44,17 @@ class InitOrderController @Autowired constructor(
         {
           log.error("Error when initializing order: {}", it)
           setLogging(context, it, null)
-          mapToErrorResponse(it, context)
+          mapToErrorResponse(it, null)
         },
         {
           log.info("Successfully initialized order. Message: {}", it)
-          setLogging(context, null, it)
-          ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+          setLogging(it?.context?: context, null, it)
+          ResponseEntity.ok(it)
         }
       )
   }
 
-  private fun mapToErrorResponse(it: HttpError, context: ProtocolContext) = ResponseEntity
+  private fun mapToErrorResponse(it: HttpError, context: ProtocolContext?) = ResponseEntity
     .status(it.status())
     .body(
       ProtocolAckResponse(
@@ -82,12 +82,12 @@ class InitOrderController @Autowired constructor(
             {
               log.error("Error when initializing order: {}", it)
               setLogging(context, it, null)
-              okResponseInit.add(ProtocolAckResponse(context = context, message = it.message(), error = it.error()))
+              okResponseInit.add(ProtocolAckResponse(context = null, message = it.message(), error = it.error()))
             },
             {
               log.info("Successfully initialized order. Message: {}", it)
-              setLogging(context, null, it)
-              okResponseInit.add(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+              setLogging(it?.context?: context, null, it)
+              okResponseInit.add(it ?: ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
             }
           )
       }

@@ -41,20 +41,19 @@ class ConfirmOrderController @Autowired constructor(
     return confirmOrderService.confirmOrder(
       context = context,
       order = orderRequest.message
-    )
-      .fold(
+    ).fold(
         {
           log.error("Error when confirming order: {}", it)
-          mapToErrorResponseV1(it, context)
+          mapToErrorResponseV1(it, null)
         },
         {
           log.info("Successfully confirmed order. Message: {}", it)
-          ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+          ResponseEntity.ok(it ?: ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
         }
       )
   }
 
-  private fun mapToErrorResponseV1(it: HttpError, context: ProtocolContext) = ResponseEntity
+  private fun mapToErrorResponseV1(it: HttpError, context: ProtocolContext?) = ResponseEntity
     .status(it.status())
     .body(
       ProtocolAckResponse(
@@ -82,43 +81,43 @@ class ConfirmOrderController @Autowired constructor(
             context = context,
             order = order.message
           ).fold(
-              {
-                log.error("Error when confirming order: {}", it)
+              {apiError->
+                log.error("Error when confirming order: {}", apiError)
                 okResponseConfirmOrders.add(
                   ProtocolAckResponse(
-                    context = context,
-                    message = it.message(),
-                    error = it.error()
+                    context = null,
+                    message = apiError.message(),
+                    error = apiError.error()
                   )
                 )
               },
-              {
-                log.info("Successfully confirmed order. Message: {}", it)
+              { apiResult ->
+                log.info("Successfully confirmed order. Message: {}", apiResult)
+                val resultContext = apiResult?.context
                 confirmOrderRepository.updateDocByQuery(
-                  OrderDao::messageId eq context?.messageId,
+                  OrderDao::messageId eq resultContext?.messageId,
                   OrderDao(
                     userId = SecurityUtil.getSecuredUserDetail()?.uid,
-                    messageId = context?.messageId,
+                    messageId = resultContext?.messageId ,
                     transactionId = null,
                     parentOrderId =  parentOrderId,
                     ondcCancellation = null,
                     ondcLinkedOrders = null
                   )
                 ).fold(
-                  {
-                    log.error("Error when updating order: {}", it)
+                  { updateError->
+                  log.error("Error when updating order: {}", updateError)
                     okResponseConfirmOrders.add(
                       ProtocolAckResponse(
-                        context = context,
-                        message = it.message(),
-                        error = it.error()
+                        context = null,
+                        message = updateError.message(),
+                        error = updateError.error()
                       )
                     )
-
                   },
-                  {
-                    log.info("Successfully updated  order in client layer db : {}", it)
-                    okResponseConfirmOrders.add(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+                  { updateResult->
+                    log.info("Successfully updated  order in client layer db : {}", updateResult)
+                    okResponseConfirmOrders.add(ProtocolAckResponse(context = resultContext, message = ResponseMessage.ack()))
                   }
                 )
               }

@@ -46,7 +46,7 @@ class SearchController @Autowired constructor(
           loggingService.postLog(loggerRequest)
           ResponseEntity
             .status(it.status().value())
-            .body(ProtocolAckResponse(protocolContext, it.message(), it.error()))
+            .body(ProtocolAckResponse(null, it.message(), it.error()))
         },
         {
           log.info("Successfully initiated Search")

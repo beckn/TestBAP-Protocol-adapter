@@ -41,17 +41,17 @@ class GetQuoteController @Autowired constructor(
         {
           log.error("Error when getting quote: {}", it)
           setLogging(context, it, null)
-          mapToErrorResponseV1(it, context)
+          mapToErrorResponseV1(it, null)
         },
         {
           log.info("Successfully initiated get quote. Message: {}", it)
-          setLogging(context, null, it)
-          ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+          setLogging(it?.context?: context, null, it)
+          ResponseEntity.ok(it ?: ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
         }
       )
   }
 
-  private fun mapToErrorResponseV1(it: HttpError, context: ProtocolContext) = ResponseEntity
+  private fun mapToErrorResponseV1(it: HttpError, context: ProtocolContext?) = ResponseEntity
     .status(it.status())
     .body(ProtocolAckResponse(context = context, message = it.message(), error = it.error()))
 
@@ -70,12 +70,12 @@ class GetQuoteController @Autowired constructor(
             {
               log.error("Error when getting quote: {}", it)
               setLogging(context, it, null)
-              okResponseQuotes.add(ProtocolAckResponse(context = context, message = it.message(), error = it.error()))
+              okResponseQuotes.add(ProtocolAckResponse(context = null, message = it.message(), error = it.error()))
             },
             {
               log.info("`Successfully initiated get quote`. Message: {}", it)
-              setLogging(context, null, it)
-              okResponseQuotes.add(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+              setLogging(it?.context?: context, null, it)
+              okResponseQuotes.add(it ?: ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
             }
           )
       }

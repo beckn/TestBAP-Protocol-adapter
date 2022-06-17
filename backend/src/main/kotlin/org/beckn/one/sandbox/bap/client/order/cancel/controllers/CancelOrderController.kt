@@ -41,17 +41,17 @@ class CancelOrderController @Autowired constructor(
       {
         log.error("Error when cancelling order with BPP: {}", it)
         setLogging(context, it, null)
-        mapToErrorResponse(it, context)
+        mapToErrorResponse(it, null)
       },
       {
         log.info("Successfully cancelled order with BPP. Message: {}", it)
-        setLogging(context, null, it)
-        ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+        setLogging(it?.context?:context, null, it)
+        ResponseEntity.ok(it)
       }
     )
   }
 
-  private fun mapToErrorResponse(it: HttpError, context: ProtocolContext) = ResponseEntity
+  private fun mapToErrorResponse(it: HttpError, context: ProtocolContext?) = ResponseEntity
     .status(it.status())
     .body(
       ProtocolAckResponse(

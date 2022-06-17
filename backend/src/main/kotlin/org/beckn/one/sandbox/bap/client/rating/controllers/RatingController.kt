@@ -33,16 +33,16 @@ class RatingController @Autowired constructor(
       .fold(
         {
           log.error("Error when rating refId: {}", it)
-          mapToErrorResponse(it, context)
+          mapToErrorResponse(it, null)
         },
         {
           log.info("Successfully rated refId. Message: {}", it)
-          ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+          ResponseEntity.ok(it)
         }
       )
   }
 
-  private fun mapToErrorResponse(it: HttpError, context: ProtocolContext) = ResponseEntity
+  private fun mapToErrorResponse(it: HttpError, context: ProtocolContext?) = ResponseEntity
     .status(it.status())
     .body(
       ProtocolAckResponse(

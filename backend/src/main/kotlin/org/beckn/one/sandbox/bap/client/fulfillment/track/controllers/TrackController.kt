@@ -34,11 +34,11 @@ class TrackController @Autowired constructor(
       .fold(
         {
           log.error("Error when getting tracking information: {}", it)
-          mapToErrorResponse(it, context)
+          mapToErrorResponse(it, null)
         },
         {
           log.info("Successfully initiated track api. Message: {}", it)
-          ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+          ResponseEntity.ok(it)
         }
       )
   }
@@ -56,14 +56,14 @@ class TrackController @Autowired constructor(
             {
               log.error("Error when getting tracking information: {}", it)
               okResponseTrack.add( ProtocolAckResponse(
-                context = context,
+                context = null,
                 message = it.message(),
                 error = it.error()
               ))
             },
             {
               log.info("Successfully initiated track api. Message: {}", it)
-              okResponseTrack.add(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+              okResponseTrack.add(it ?: ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
             }
           )
       }

@@ -34,20 +34,19 @@ class OrderStatusController @Autowired constructor(
     return orderStatusService.getOrderStatus(
       context = context,
       request = orderStatusRequest
-    )
-      .fold(
+    ).fold(
         {
           log.error("Error when getting order status: {}", it)
-          mapToErrorResponseV1(it, context)
+          mapToErrorResponseV1(it, null)
         },
         {
           log.info("Successfully triggered order status api. Message: {}", it)
-          ResponseEntity.ok(ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
+          ResponseEntity.ok(it ?: ProtocolAckResponse(context = context, message = ResponseMessage.ack()))
         }
       )
   }
 
-  private fun mapToErrorResponseV1(it: HttpError, context: ProtocolContext) = ResponseEntity
+  private fun mapToErrorResponseV1(it: HttpError, context: ProtocolContext?) = ResponseEntity
     .status(it.status())
     .body(
       ProtocolAckResponse(
@@ -74,14 +73,14 @@ class OrderStatusController @Autowired constructor(
             {
               log.error("Error when getting order status: {}", it)
               okResponseOrderStatus.add( ProtocolAckResponse(
-                context = context,
+                context = null,
                 message = it.message(),
                 error = it.error()
               ))
             },
             {
               log.info("Successfully triggered order status api. Message: {}", it)
-              okResponseOrderStatus.add( ProtocolAckResponse(
+              okResponseOrderStatus.add( it ?: ProtocolAckResponse(
                 context = context, message = ResponseMessage.ack()
               ))
             }
