@@ -28,7 +28,7 @@ class SharedController @Autowired constructor(
 ) {
 
   @PostMapping(
-    "/protocol/v1/redirect",
+    "/client/v1/redirect",
     consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE],
   )

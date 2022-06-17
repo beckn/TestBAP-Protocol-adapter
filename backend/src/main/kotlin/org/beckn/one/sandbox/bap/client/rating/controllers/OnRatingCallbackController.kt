@@ -17,7 +17,7 @@ class OnRatingCallbackController @Autowired constructor(
   loggingService: LoggingService,
   val contextFactory: ContextFactory
 ): AbstractCallbackController<ProtocolOnRating>(store, loggingFactory, loggingService) {
-  
+
   fun onOrderStatus(@RequestBody ratingResponse: ProtocolOnRating) = onCallback(
     ratingResponse,
       ProtocolContext.Action.ON_SELECT
