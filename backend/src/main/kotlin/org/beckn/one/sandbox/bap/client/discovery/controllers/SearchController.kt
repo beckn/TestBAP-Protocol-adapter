@@ -50,7 +50,7 @@ class SearchController @Autowired constructor(
         },
         {
           log.info("Successfully initiated Search")
-          ResponseEntity.ok(ProtocolAckResponse(protocolContext, ResponseMessage.ack()))
+          ResponseEntity.ok(it)
         }
       )
   }
