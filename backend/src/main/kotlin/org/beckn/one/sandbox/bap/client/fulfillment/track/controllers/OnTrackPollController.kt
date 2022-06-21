@@ -31,7 +31,7 @@ class OnTrackPollController(
   @RequestMapping("/client/v1/on_track")
   @ResponseBody
   fun onTrack(@RequestParam messageId: String): ResponseEntity<out ClientResponse> =
-    onPoll(contextFactory.create(messageId= messageId),null, null, null, ProtocolContext.Action.ON_SEARCH)
+    onPoll(contextFactory.create(messageId= messageId),null, null, null, ProtocolContext.Action.ON_TRACK)
 
   @RequestMapping("/client/v2/on_track")
   @ResponseBody
@@ -43,7 +43,7 @@ class OnTrackPollController(
       for (messageId in messageIdArray) {
         val bapResult = onPoll(
           contextFactory.create(messageId= messageId),null, null, null,
-          ProtocolContext.Action.ON_SEARCH
+          ProtocolContext.Action.ON_TRACK
         )
         when (bapResult.statusCode.value()) {
           200 -> {

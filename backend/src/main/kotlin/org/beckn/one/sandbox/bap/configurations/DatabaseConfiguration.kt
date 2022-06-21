@@ -46,10 +46,6 @@ class DatabaseConfiguration @Autowired constructor(
     BecknResponseRepository(database.getCollectionOfName("user"))
 
 
-
-
-
-
   @Bean
   fun searchResponseRepo(@Autowired database: MongoDatabase): BecknProtocolResponseRepository<OnSearchDao> =
     BecknProtocolResponseRepository(database.getCollectionOfName("on_search"))
