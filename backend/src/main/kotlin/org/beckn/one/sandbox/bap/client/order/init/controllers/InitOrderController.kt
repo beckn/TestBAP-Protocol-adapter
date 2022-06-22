@@ -112,6 +112,6 @@ class InitOrderController @Autowired constructor(
     loggingService.postLog(loggerRequest)
   }
 
-  private fun getContext(transactionId: String , bppId: String, bppUri: String) =
+  private fun getContext(transactionId: String ,bppId: String? = null, bppUri: String?= null) =
     contextFactory.create(action = ProtocolContext.Action.INIT, transactionId = transactionId , bppId = bppId, bppUri = bppUri)
 }

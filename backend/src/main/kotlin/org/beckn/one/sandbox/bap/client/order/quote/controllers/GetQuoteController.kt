@@ -106,5 +106,5 @@ class GetQuoteController @Autowired constructor(
   }
 
 
-  private fun getContext(transactionId: String, bppId: String, bppUri: String) = contextFactory.create(action = SELECT, transactionId = transactionId, bppId = bppId, bppUri = bppUri)
+  private fun getContext(transactionId: String, bppId: String? = null, bppUri: String?= null) = contextFactory.create(action = SELECT, transactionId = transactionId, bppId = bppId, bppUri = bppUri)
 }
