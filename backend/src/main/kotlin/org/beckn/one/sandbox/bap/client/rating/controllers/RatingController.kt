@@ -28,7 +28,7 @@ class RatingController @Autowired constructor(
   fun getRatingV1(
     @RequestBody ratingRequest: RatingRequestDto,
   ): ResponseEntity<ProtocolAckResponse> {
-    val context = getContext(ratingRequest.context.transactionId)
+    val context = getContext(transactionId = ratingRequest.context.transactionId, bppId = ratingRequest.context.bppId, bppUri = ratingRequest.context.bppUri)
     return ratingService.rating(context = context, request = ratingRequest)
       .fold(
         {
@@ -52,6 +52,6 @@ class RatingController @Autowired constructor(
       )
     )
 
-  private fun getContext(transactionId: String) =
-    contextFactory.create(action = ProtocolContext.Action.RATING, transactionId = transactionId)
+  private fun getContext(transactionId: String, bppId: String, bppUri: String) =
+    contextFactory.create(action = ProtocolContext.Action.RATING, transactionId = transactionId, bppUri = bppUri, bppId = bppId)
 }

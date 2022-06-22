@@ -34,7 +34,7 @@ class InitOrderController @Autowired constructor(
   fun initOrderV1(
     @RequestBody orderRequest: OrderRequestDto
   ): ResponseEntity<ProtocolAckResponse> {
-    val context = getContext(orderRequest.context.transactionId)
+    val context = getContext(transactionId = orderRequest.context.transactionId, orderRequest.context.bppId, orderRequest.context.bppUri)
     setLogging(context, null, null)
     return initOrderService.initOrder(
       context = context,
@@ -72,7 +72,7 @@ class InitOrderController @Autowired constructor(
     var okResponseInit : MutableList<ProtocolAckResponse> = ArrayList()
     if(!orderRequest.isNullOrEmpty()) {
       for (data in orderRequest) {
-        val context = getContext(data.context.transactionId)
+        val context = getContext(transactionId = data.context.transactionId,bppId = data.context.bppId, bppUri = data.context.bppUri )
         setLogging(context, null, null)
         initOrderService.initOrder(
           context = context,
@@ -112,6 +112,6 @@ class InitOrderController @Autowired constructor(
     loggingService.postLog(loggerRequest)
   }
 
-  private fun getContext(transactionId: String) =
-    contextFactory.create(action = ProtocolContext.Action.INIT, transactionId = transactionId)
+  private fun getContext(transactionId: String , bppId: String, bppUri: String) =
+    contextFactory.create(action = ProtocolContext.Action.INIT, transactionId = transactionId , bppId = bppId, bppUri = bppUri)
 }

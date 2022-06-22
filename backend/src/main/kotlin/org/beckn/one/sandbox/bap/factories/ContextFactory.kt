@@ -22,6 +22,7 @@ class ContextFactory @Autowired constructor(
     messageId: String = uuidFactory.create(),
     action: ProtocolContext.Action? = ProtocolContext.Action.SEARCH,
     bppId: String? = null,
+    bppUri: String? = null
   ) = ProtocolContext(
     domain = domain,
     country = country,
@@ -31,6 +32,7 @@ class ContextFactory @Autowired constructor(
     bapId = bapId,
     bapUri = bapUrl,
     bppId = bppId,
+    bppUri = bppUri,
     transactionId = transactionId,
     messageId = messageId,
     clock = clock,

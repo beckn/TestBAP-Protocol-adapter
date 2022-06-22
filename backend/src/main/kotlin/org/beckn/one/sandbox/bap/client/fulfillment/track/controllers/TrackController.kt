@@ -29,7 +29,7 @@ class TrackController @Autowired constructor(
   @RequestMapping("/client/v1/track")
   @ResponseBody
   fun track(@RequestBody request: TrackRequestDto): ResponseEntity<ProtocolAckResponse> {
-    val context = contextFactory.create(action = ProtocolContext.Action.TRACK)
+    val context = contextFactory.create(action = ProtocolContext.Action.TRACK, bppUri = request.context.bppUri, bppId = request.context.bppId)
     return trackService.track(context, request)
       .fold(
         {
@@ -50,7 +50,7 @@ class TrackController @Autowired constructor(
     if(!trackRequestList.isNullOrEmpty()){
       var okResponseTrack : MutableList<ProtocolAckResponse> = ArrayList()
       for (trackRequest in trackRequestList) {
-        val context = contextFactory.create(action = ProtocolContext.Action.TRACK)
+        val context = contextFactory.create(action = ProtocolContext.Action.TRACK, bppUri = trackRequest.context.bppUri, bppId = trackRequest.context.bppId)
         trackService.track(context, trackRequest)
           .fold(
             {

@@ -34,7 +34,7 @@ class GetQuoteController @Autowired constructor(
   @PostMapping("/client/v1/get_quote")
   @ResponseBody
   fun getQuoteV1(@RequestBody request: GetQuoteRequestDto): ResponseEntity<ProtocolAckResponse> {
-    val context = getContext(request.context.transactionId)
+    val context = getContext(request.context.transactionId, request.context.bppId, request.context.bppUri)
     setLogging(context, null, null)
     return quoteService.getQuote(context, request.message.cart)
       .fold(
@@ -63,7 +63,7 @@ class GetQuoteController @Autowired constructor(
 
     if(!request.isNullOrEmpty()){
       for( quoteRequest:GetQuoteRequestDto in request){
-        val context = getContext(quoteRequest.context.transactionId)
+        val context = getContext(quoteRequest.context.transactionId, quoteRequest.context.bppId, quoteRequest.context.bppUri)
         setLogging(context, null, null)
         quoteService.getQuote(context, quoteRequest.message.cart)
           .fold(
@@ -106,5 +106,5 @@ class GetQuoteController @Autowired constructor(
   }
 
 
-  private fun getContext(transactionId: String) = contextFactory.create(action = SELECT, transactionId = transactionId)
+  private fun getContext(transactionId: String, bppId: String, bppUri: String) = contextFactory.create(action = SELECT, transactionId = transactionId, bppId = bppId, bppUri = bppUri)
 }

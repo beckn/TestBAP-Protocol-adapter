@@ -30,7 +30,7 @@ class GetPolicyController @Autowired constructor(
   @ResponseBody
   fun getCancellationPolicyV1(@RequestBody request: GetOrderPolicyDto): ResponseEntity<ProtocolAckResponse> {
     log.info("Got request for getting order policy from BPP")
-    val context = getContext(request.context.transactionId, request.context.bppId, ProtocolContext.Action.CANCEL)
+    val context = getContext(request.context.transactionId, request.context.bppId, request.context.bppUri,ProtocolContext.Action.CANCEL)
     return getPolicyService.getCancellationPolicy(context = context).fold(
       {
         log.error("Error when getting order policy from BPP: {}", it)
@@ -48,7 +48,7 @@ class GetPolicyController @Autowired constructor(
   @ResponseBody
   fun getRatingCategoriesV1(@RequestBody request: GetOrderPolicyDto): ResponseEntity<ClientOrderPolicyResponse> {
     log.info("Got request for getting rating categories from BPP")
-    val context = getContext(request.context.transactionId, request.context.bppId, ProtocolContext.Action.RATING)
+    val context = getContext(request.context.transactionId, request.context.bppId, request.context.bppUri, ProtocolContext.Action.RATING)
     return getPolicyService.getRatingCategoriesPolicy(context = context).fold(
       {
         log.error("Error when getting rating categories from BPP: {}", it)
@@ -107,6 +107,6 @@ class GetPolicyController @Autowired constructor(
 //    return ResponseEntity.status(status.first().value()).body(response)
 //  }
 
-  private fun getContext(transactionId: String, bppId: String? = null, action: ProtocolContext.Action) =
-    contextFactory.create(action = action, transactionId = transactionId, bppId = bppId)
+  private fun getContext(transactionId: String, bppId: String? = null, bppUri: String? = null, action: ProtocolContext.Action) =
+    contextFactory.create(action = action, transactionId = transactionId, bppId = bppId, bppUri = bppUri)
 }

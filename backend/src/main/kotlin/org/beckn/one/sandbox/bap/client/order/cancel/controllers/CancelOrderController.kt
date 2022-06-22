@@ -31,7 +31,7 @@ class CancelOrderController @Autowired constructor(
   @ResponseBody
   fun cancelOrderV1(@RequestBody request: CancelOrderDto): ResponseEntity<ProtocolAckResponse> {
     log.info("Got request to cancel order")
-    val context = getContext(request.context.transactionId, request.context.bppId)
+    val context = getContext(request.context.transactionId, request.context.bppId, request.context.bppUri)
     setLogging(context, null, null)
     return cancelOrderService.cancel(
       context = context,
@@ -70,6 +70,6 @@ class CancelOrderController @Autowired constructor(
     loggingService.postLog(loggerRequest)
   }
 
-  private fun getContext(transactionId: String, bppId: String? = null) =
-    contextFactory.create(action = ProtocolContext.Action.CANCEL, transactionId = transactionId, bppId = bppId)
+  private fun getContext(transactionId: String, bppId: String? = null, bppUri: String?= null) =
+    contextFactory.create(action = ProtocolContext.Action.CANCEL, transactionId = transactionId, bppId = bppId, bppUri = bppUri)
 }

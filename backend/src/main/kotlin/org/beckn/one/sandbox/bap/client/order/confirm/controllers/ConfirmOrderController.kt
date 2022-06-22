@@ -14,6 +14,7 @@ import org.beckn.protocol.schemas.ProtocolAckResponse
 import org.beckn.protocol.schemas.ProtocolContext
 import org.beckn.protocol.schemas.ResponseMessage
 import org.litote.kmongo.eq
+import org.litote.kmongo.or
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,7 +38,7 @@ class ConfirmOrderController @Autowired constructor(
   fun confirmOrderV1(
     @RequestBody orderRequest: OrderRequestDto
   ): ResponseEntity<ProtocolAckResponse> {
-    val context = getContext(orderRequest.context.transactionId)
+    val context = getContext(orderRequest.context.transactionId, bppId = orderRequest.context.bppId, bppUri =  orderRequest.context.bppUri)
     return confirmOrderService.confirmOrder(
       context = context,
       order = orderRequest.message
@@ -76,7 +77,7 @@ class ConfirmOrderController @Autowired constructor(
       if (SecurityUtil.getSecuredUserDetail() != null) {
         val parentOrderId = Util.getRandomString()
         for (order in orderRequest) {
-          val context = getContext(order.context.transactionId)
+          val context = getContext(order.context.transactionId, bppUri = order.context.bppUri, bppId = order.context.bppId)
           confirmOrderService.confirmOrder(
             context = context,
             order = order.message
@@ -144,6 +145,6 @@ class ConfirmOrderController @Autowired constructor(
       )
     )
 
-  private fun getContext(transactionId: String) =
-    contextFactory.create(action = ProtocolContext.Action.CONFIRM, transactionId = transactionId)
+  private fun getContext(transactionId: String, bppId: String, bppUri: String) =
+    contextFactory.create(action = ProtocolContext.Action.CONFIRM, transactionId = transactionId, bppUri = bppUri, bppId = bppId)
 }

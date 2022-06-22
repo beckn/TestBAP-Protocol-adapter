@@ -5,5 +5,6 @@ import org.beckn.protocol.schemas.Default
 
 data class ClientContext @Default constructor(
   val transactionId: String = UuidFactory().create(),
-  val bppId: String? = null,
+  val bppId: String,
+  val bppUri: String
 )
