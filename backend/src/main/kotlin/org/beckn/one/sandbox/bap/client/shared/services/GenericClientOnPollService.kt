@@ -29,11 +29,13 @@ open class GenericClientOnPollService<Protocol : ProtocolResponse, Output : Clie
           transformer.transform(it, context)
         }
       }
-      ProtocolContext.Action.ON_STATUS -> pollForService.findResponsesByOrderId(orderId ?: "").flatMap {
-        transformer.transform(it, context)
+      ProtocolContext.Action.ON_STATUS -> {
+        pollForService.findResponsesByOrderId(orderId ?: "").flatMap {
+          transformer.transform(it, context)
+        }
       }
       else -> {
-        pollForService.findResponsesByOrderId(context.messageId).flatMap {
+        pollForService.findResponses(context.messageId).flatMap {
           transformer.transform(it, context)
         }
       }
