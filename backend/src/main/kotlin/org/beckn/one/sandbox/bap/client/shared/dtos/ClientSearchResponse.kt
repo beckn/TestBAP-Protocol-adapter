@@ -19,4 +19,5 @@ data class ClientCatalog @Default constructor(
   val bppCategories: List<ProtocolCategory>? = null,
   val exp: LocalDateTime? = null,
   val bppId: String? = null,
+  val bppUri: String? = null,
 )
