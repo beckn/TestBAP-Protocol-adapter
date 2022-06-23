@@ -40,7 +40,9 @@ class ProtocolResponseStorageServiceImpl<Proto : ProtocolResponse, Entity : Beck
     .catch {
       responseRepo.findByMessageId(id)
     }
-    .map { toSchema(it) }
+    .map {
+      toSchema(it)
+    }
     .mapLeft { e ->
       log.error("Exception while fetching search response", e)
       DatabaseError.OnRead

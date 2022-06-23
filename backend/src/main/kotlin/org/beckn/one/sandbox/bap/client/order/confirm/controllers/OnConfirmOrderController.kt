@@ -72,7 +72,7 @@ class OnConfirmOrderController @Autowired constructor(
                       okResponseConfirmOrder.add(
                         ClientConfirmResponse(
                           error = it.error(),
-                          context = contextFactory.create(messageId = messageId)
+                          context = contextFactory.create(messageId = messageId,action = ProtocolContext.Action.ON_CONFIRM)
                         )
                       )
                     },{
@@ -86,7 +86,7 @@ class OnConfirmOrderController @Autowired constructor(
                           okResponseConfirmOrder.add(
                             ClientConfirmResponse(
                               error = it.error(),
-                              context = contextFactory.create(messageId = messageId)
+                              context = contextFactory.create(messageId = messageId,action = ProtocolContext.Action.ON_CONFIRM)
                             )
                           )
                         }, {
@@ -101,7 +101,7 @@ class OnConfirmOrderController @Autowired constructor(
                   okResponseConfirmOrder.add(
                     ClientConfirmResponse(
                       error = DatabaseError.NoDataFound.noDataFoundError,
-                      context = contextFactory.create(messageId = messageId)
+                      context = contextFactory.create(messageId = messageId,action = ProtocolContext.Action.ON_CONFIRM)
                     )
                   )
                 }
@@ -110,7 +110,7 @@ class OnConfirmOrderController @Autowired constructor(
                 okResponseConfirmOrder.add(
                   ClientConfirmResponse(
                     error = bapResult.body?.error,
-                    context = contextFactory.create(messageId = messageId)
+                    context = contextFactory.create(messageId = messageId ,action = ProtocolContext.Action.ON_CONFIRM)
                   )
                 )
               }

@@ -18,7 +18,7 @@ interface BecknResponseDao {
 }
 
 data class OnConfirmDao @Default constructor(
-  @field:JsonIgnore override val context: ContextDao,
+  override val context: ContextDao,
   val transactionId: String? = null,
   val messageId: String? = null,
   val message: OnConfirmMessageDao? = null,
