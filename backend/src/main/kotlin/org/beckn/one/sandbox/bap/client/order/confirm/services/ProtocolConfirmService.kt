@@ -78,7 +78,9 @@ class ProtocolConfirmService @Autowired constructor(
           addOns = emptyList(),
           offers = emptyList(),
           payment = ProtocolPayment(
-            params = mapOf("amount" to order.payment!!.paidAmount.toString()),
+            params = mapOf("amount" to order.payment!!.paidAmount.toString(),
+            "currency" to order.payment.currency
+            ),
             status = ProtocolPayment.Status.PAID
           )
         )

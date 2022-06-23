@@ -6,7 +6,9 @@ import org.beckn.protocol.schemas.Default
 data class OrderPayment @Default constructor(
   val paidAmount: Double,
   val status: Status,
-  val transactionId: String
+  val transactionId: String,
+  val currency: String
+
 ) {
   enum class Status(val value: String) {
     @JsonProperty("PAID")
