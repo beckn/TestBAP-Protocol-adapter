@@ -23,10 +23,10 @@ class BppTrackService @Autowired constructor(
 ) {
   private val log: Logger = LoggerFactory.getLogger(BppTrackService::class.java)
 
-  fun track(bppUri: String, context: ProtocolContext, request: TrackRequestDto):
+  fun track(context: ProtocolContext, request: TrackRequestDto):
       Either<BppError, ProtocolAckResponse> = Either.catch {
-    log.info("Invoking Track API on BPP: {}", bppUri)
-    val bppServiceClient = bppServiceClientFactory.getClient(bppUri)
+    log.info("Invoking Track API on BPP: {}", request)
+    val bppServiceClient = bppServiceClientFactory.getClient(null)
     val httpResponse = bppServiceClient.track(ProtocolTrackRequest(context = context, message = request.message))
       .execute()
     log.info("BPP Track API response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())

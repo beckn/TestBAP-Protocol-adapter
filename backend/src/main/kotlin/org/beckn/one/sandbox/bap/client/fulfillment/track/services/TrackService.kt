@@ -23,9 +23,6 @@ class TrackService @Autowired constructor(
   fun track(context: ProtocolContext, request: TrackRequestDto): Either<HttpError, ProtocolAckResponse?> {
     log.info("Got track request. Request: {}", request)
 
-    return TrackRequestDto.validate(request)
-      .flatMap { registryService.lookupBppById(it.context.bppId!!) }
-      .map { it.first() }
-      .flatMap { bppTrackService.track(it.subscriber_url, context, request) }
+    return TrackRequestDto.validate(request).flatMap { bppTrackService.track( context, request) }
   }
 }
