@@ -13,6 +13,7 @@ class ContextFactory @Autowired constructor(
   @Value("\${context.country}") private val country: String,
   @Value("\${context.bap_id}") private val bapId: String,
   @Value("\${context.bap_uri}") private val bapUrl: String,
+  @Value("\${context.ttl_seconds}") private val ttlSeconds: String,
   private val uuidFactory: UuidFactory,
   private val clock: Clock = Clock.systemUTC()
 ) {
@@ -36,5 +37,6 @@ class ContextFactory @Autowired constructor(
     transactionId = transactionId,
     messageId = messageId,
     clock = clock,
+    ttl = ttlSeconds
   )
 }
