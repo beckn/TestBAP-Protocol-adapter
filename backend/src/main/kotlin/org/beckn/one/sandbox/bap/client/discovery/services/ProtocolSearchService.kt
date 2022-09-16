@@ -3,6 +3,7 @@ package org.beckn.one.sandbox.bap.client.discovery.services
 import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
+import com.google.gson.GsonBuilder
 import org.beckn.one.sandbox.bap.client.external.hasBody
 import org.beckn.one.sandbox.bap.client.external.isAckNegative
 import org.beckn.one.sandbox.bap.client.external.isInternalServerError
@@ -26,19 +27,23 @@ class ProtocolSearchService @Autowired constructor(
       : Either<BppError, ProtocolAckResponse> {
     return Either.catch {
       val protocolServiceClient = bppServiceClientFactory.getClient(null)
-      log.info("Initiated Search for context: {}", context)
-      val httpResponse = protocolServiceClient.search(
-        ProtocolSearchRequest(
-          context,
-          ProtocolSearchRequestMessage(
-            ProtocolIntent(
-              item = ProtocolIntentItem(descriptor = ProtocolIntentItemDescriptor(name = criteria.searchString)),
-              provider = ProtocolProvider(id = criteria.providerId, category_id = criteria.categoryId, descriptor = ProtocolDescriptor(name = criteria.providerName)),
-              fulfillment = getFulfillmentFilter(criteria),
-              category = ProtocolCategory(id = criteria.categoryId,descriptor = ProtocolDescriptor(name = criteria.categoryName))
-            )
+      log.info("Initiated Search for context: {}\n", context)
+      val protocolSearchRequest = ProtocolSearchRequest(
+        context,
+        ProtocolSearchRequestMessage(
+          ProtocolIntent(
+            item = ProtocolIntentItem(descriptor = ProtocolIntentItemDescriptor(name = criteria.searchString)),
+            provider = ProtocolProvider(id = criteria.providerId, category_id = criteria.categoryId, descriptor = ProtocolDescriptor(name = criteria.providerName)),
+            fulfillment = getFulfillmentFilter(criteria),
+            category = ProtocolCategory(id = criteria.categoryId,descriptor = ProtocolDescriptor(name = criteria.categoryName))
           )
         )
+      )
+      val gsonPretty = GsonBuilder().setPrettyPrinting().create()
+
+      log.info("Protocol search request payload : {}\n", gsonPretty.toJson(protocolSearchRequest))
+      val httpResponse = protocolServiceClient.search(
+        protocolSearchRequest
       ).execute()
 
       log.info("Search response. Status: {}, Body: {}", httpResponse.code(), httpResponse.body())

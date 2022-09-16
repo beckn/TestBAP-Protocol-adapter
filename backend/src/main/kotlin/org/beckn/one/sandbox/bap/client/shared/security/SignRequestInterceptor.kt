@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.Instant
+import javax.xml.datatype.DatatypeFactory
 
 @Component
 class SignRequestInterceptor @Autowired constructor(
@@ -37,7 +38,8 @@ class SignRequestInterceptor @Autowired constructor(
   private fun createAuthorization(request: Request): Authorization {
     val now = Instant.now()
     val created = now.epochSecond
-    val expires = now.plusSeconds(ttlInSeconds.toLong()).epochSecond
+    val inSec = DatatypeFactory.newInstance().newDuration(ttlInSeconds).seconds
+    val expires = now.plusSeconds(inSec.toLong()).epochSecond
     val bodyContent = getBodyContent(request.body()!!)
     return Authorization.create(
       subscriberId = subscriberId,
