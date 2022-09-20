@@ -1,6 +1,7 @@
 package org.beckn.one.sandbox.bap.client.shared.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.gson.GsonBuilder
 import org.beckn.one.sandbox.bap.client.discovery.controllers.OnSearchCallbackController
 import org.beckn.one.sandbox.bap.client.fulfillment.track.controllers.OnTrackCallbackController
 import org.beckn.one.sandbox.bap.client.order.cancel.controllers.OnCancelCallbackController
@@ -13,6 +14,8 @@ import org.beckn.one.sandbox.bap.client.shared.dtos.SharedResponse
 import org.beckn.one.sandbox.bap.client.support.controllers.OnSupportCallbackController
 import org.beckn.one.sandbox.bap.factories.ContextFactory
 import org.beckn.protocol.schemas.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -36,6 +39,7 @@ class SharedController @Autowired constructor(
   val onCancelCallbackController: OnCancelCallbackController,
   val onTraCallbackController: OnTrackCallbackController,
 ) {
+  private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
   @PostMapping(
     "/client/v1/redirect",
@@ -45,9 +49,12 @@ class SharedController @Autowired constructor(
   fun onSharedCallback(request: HttpServletRequest): ResponseEntity<ProtocolAckResponse> {
     val parameter = extractPostRequestBody(request)
     val obj= objectMapper.readValue(parameter, SharedResponse::class.java)
+    val gsonPretty = GsonBuilder().setPrettyPrinting().create()
+    log.info("Call back response message : ", gsonPretty.toJson(obj))
     when(obj.context?.action) {
       ProtocolContext.Action.ON_SEARCH->{
         val request= objectMapper.readValue(parameter, ProtocolOnSearch::class.java)
+        log.info(gsonPretty.toJson(request))
         return onSearchCallbackController.onSearch(request)
       }
       ProtocolContext.Action.ON_SELECT->{
